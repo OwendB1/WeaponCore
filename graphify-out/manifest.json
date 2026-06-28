@@ -1,0 +1,942 @@
+{
+  "CoreSystems.csproj": {
+    "mtime": 1782477619.1026497,
+    "ast_hash": "3e9273ba922d13f1996109123a68d01d",
+    "semantic_hash": "3e9273ba922d13f1996109123a68d01d"
+  },
+  "CoreSystems.sln": {
+    "mtime": 1782476186.6355426,
+    "ast_hash": "6dc63ee2e878192bae41f7adfae3238e",
+    "semantic_hash": "6dc63ee2e878192bae41f7adfae3238e"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiComp/AiCompFields.cs": {
+    "mtime": 1782476186.6365151,
+    "ast_hash": "901a129db1a312b2cc36a6ce744663d3",
+    "semantic_hash": "901a129db1a312b2cc36a6ce744663d3"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiComp/AiCompRun.cs": {
+    "mtime": 1782476186.6365898,
+    "ast_hash": "79a188ccf729fffbc90a82beeb838606",
+    "semantic_hash": "79a188ccf729fffbc90a82beeb838606"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiConstruct.cs": {
+    "mtime": 1782476186.6365898,
+    "ast_hash": "4237faacaae2c322c6c7130c9717c3fd",
+    "semantic_hash": "4237faacaae2c322c6c7130c9717c3fd"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiConstructData.cs": {
+    "mtime": 1782476186.6367338,
+    "ast_hash": "2bc0e8f88f792e9bf86a9f859db5a646",
+    "semantic_hash": "2bc0e8f88f792e9bf86a9f859db5a646"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiData.cs": {
+    "mtime": 1782476186.636766,
+    "ast_hash": "362c55f5017f57b3a27e54f87360fdfe",
+    "semantic_hash": "362c55f5017f57b3a27e54f87360fdfe"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiDatabase.cs": {
+    "mtime": 1782476186.6368246,
+    "ast_hash": "7563784ad5509d84aee56745c5a44393",
+    "semantic_hash": "7563784ad5509d84aee56745c5a44393"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiEvents.cs": {
+    "mtime": 1782476186.6368842,
+    "ast_hash": "dad16e82c835afc2e6e4bdedac51f2e9",
+    "semantic_hash": "dad16e82c835afc2e6e4bdedac51f2e9"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiFields.cs": {
+    "mtime": 1782476186.6369348,
+    "ast_hash": "54a4ee45cc821c73b617851c1aaa194b",
+    "semantic_hash": "54a4ee45cc821c73b617851c1aaa194b"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiSupport.cs": {
+    "mtime": 1782476186.6370068,
+    "ast_hash": "2f20675998459d0d87e5aab1faf6dabf",
+    "semantic_hash": "2f20675998459d0d87e5aab1faf6dabf"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiTargeting.cs": {
+    "mtime": 1782476186.6371713,
+    "ast_hash": "5c29d60d67c0cc0eeea7f56c08d61222",
+    "semantic_hash": "5c29d60d67c0cc0eeea7f56c08d61222"
+  },
+  "Data/Scripts/CoreSystems/Ai/AiTypes.cs": {
+    "mtime": 1782476186.6372783,
+    "ast_hash": "4122e7fdf7e6dbd05f53e0743a980cdb",
+    "semantic_hash": "4122e7fdf7e6dbd05f53e0743a980cdb"
+  },
+  "Data/Scripts/CoreSystems/Api/ApiBackend.cs": {
+    "mtime": 1782476186.637504,
+    "ast_hash": "e288baf11e3a7f48a6896663d90beb2d",
+    "semantic_hash": "e288baf11e3a7f48a6896663d90beb2d"
+  },
+  "Data/Scripts/CoreSystems/Api/ApiServer.cs": {
+    "mtime": 1782476186.6375759,
+    "ast_hash": "c62cb201a302a454be2094e8c24fa9ea",
+    "semantic_hash": "c62cb201a302a454be2094e8c24fa9ea"
+  },
+  "Data/Scripts/CoreSystems/Api/CoreSystemsApiBase.cs": {
+    "mtime": 1782476186.6376805,
+    "ast_hash": "d6b1ae4d2e917680d50e6022295965ae",
+    "semantic_hash": "d6b1ae4d2e917680d50e6022295965ae"
+  },
+  "Data/Scripts/CoreSystems/Api/CoreSystemsApiBlocks.cs": {
+    "mtime": 1782476186.6377234,
+    "ast_hash": "ddc73f7a15d8d661857d608c8c72fd29",
+    "semantic_hash": "ddc73f7a15d8d661857d608c8c72fd29"
+  },
+  "Data/Scripts/CoreSystems/Api/CoreSystemsApiDefs.cs": {
+    "mtime": 1782476186.6379147,
+    "ast_hash": "c65d89c1c42b57ecd577ad3a18ee3f88",
+    "semantic_hash": "c65d89c1c42b57ecd577ad3a18ee3f88"
+  },
+  "Data/Scripts/CoreSystems/Api/CoreSystemsApiPhantoms.cs": {
+    "mtime": 1782476186.6379762,
+    "ast_hash": "48ffbcc282496e2b5eb219caee85f291",
+    "semantic_hash": "48ffbcc282496e2b5eb219caee85f291"
+  },
+  "Data/Scripts/CoreSystems/Api/CoreSystemsPbApi.cs": {
+    "mtime": 1782476186.638047,
+    "ast_hash": "7251108fe47084095ee1c5d11170d0b2",
+    "semantic_hash": "7251108fe47084095ee1c5d11170d0b2"
+  },
+  "Data/Scripts/CoreSystems/AudioVisual/AvShot.cs": {
+    "mtime": 1782476186.6382008,
+    "ast_hash": "4c59f65d9f4bbaf85350fc5215583122",
+    "semantic_hash": "4c59f65d9f4bbaf85350fc5215583122"
+  },
+  "Data/Scripts/CoreSystems/AudioVisual/RunAv.cs": {
+    "mtime": 1782476186.6383333,
+    "ast_hash": "674bc0ec0a73d6ef4cd20d04d92b5e6a",
+    "semantic_hash": "674bc0ec0a73d6ef4cd20d04d92b5e6a"
+  },
+  "Data/Scripts/CoreSystems/Comms/SignalProcessing.cs": {
+    "mtime": 1782476186.6384082,
+    "ast_hash": "f10164e660babd4930403a5d07e4af2a",
+    "semantic_hash": "f10164e660babd4930403a5d07e4af2a"
+  },
+  "Data/Scripts/CoreSystems/Comms/Space.cs": {
+    "mtime": 1782476186.6384332,
+    "ast_hash": "78f8b2fd580c36db209fec2c7da5c3ba",
+    "semantic_hash": "78f8b2fd580c36db209fec2c7da5c3ba"
+  },
+  "Data/Scripts/CoreSystems/Comms/Spectrum.cs": {
+    "mtime": 1782476186.6384332,
+    "ast_hash": "f7641e88998475c138dd3d4905fadcc7",
+    "semantic_hash": "f7641e88998475c138dd3d4905fadcc7"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/AmmoTypes.cs": {
+    "mtime": 1782476186.6384897,
+    "ast_hash": "5e9c670326380ad64f4c682f81a01881",
+    "semantic_hash": "5e9c670326380ad64f4c682f81a01881"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/Artillery.cs": {
+    "mtime": 1782476186.6386788,
+    "ast_hash": "cb36706fea04b624f152adf8f783dd87",
+    "semantic_hash": "cb36706fea04b624f152adf8f783dd87"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/Assault Cannons.cs": {
+    "mtime": 1782476186.6387181,
+    "ast_hash": "4ecf1d3ebec37cae4ec722dbb1ade1ff",
+    "semantic_hash": "4ecf1d3ebec37cae4ec722dbb1ade1ff"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/Autocannons.cs": {
+    "mtime": 1782476186.6387506,
+    "ast_hash": "54522e4c579b85ef3fc6156b63e14e49",
+    "semantic_hash": "54522e4c579b85ef3fc6156b63e14e49"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/Gatlings.cs": {
+    "mtime": 1782476186.6388113,
+    "ast_hash": "7ec58f1daaf8ffae8c35bc6bdf206dae",
+    "semantic_hash": "7ec58f1daaf8ffae8c35bc6bdf206dae"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/InteriorTurret.cs": {
+    "mtime": 1782476186.6388533,
+    "ast_hash": "ca5c7f0a6291f73e7cdb41a6813e443e",
+    "semantic_hash": "ca5c7f0a6291f73e7cdb41a6813e443e"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/MasterConfig.cs": {
+    "mtime": 1782476186.6388822,
+    "ast_hash": "12951bd55248f5de0d6894cc8018b238",
+    "semantic_hash": "12951bd55248f5de0d6894cc8018b238"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/Missiles.cs": {
+    "mtime": 1782476186.6389406,
+    "ast_hash": "6bfd7b42ae44193f2c74d8fcf491c50e",
+    "semantic_hash": "6bfd7b42ae44193f2c74d8fcf491c50e"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/ProjectileTags.cs": {
+    "mtime": 1782476186.638975,
+    "ast_hash": "bc55a0b2343815bdcd77aca2163d6575",
+    "semantic_hash": "bc55a0b2343815bdcd77aca2163d6575"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/RailgunAnimations.cs": {
+    "mtime": 1782476186.6390026,
+    "ast_hash": "b89e8bbf913527d0d2d6c8b4c39139e5",
+    "semantic_hash": "b89e8bbf913527d0d2d6c8b4c39139e5"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/Railguns.cs": {
+    "mtime": 1782476186.6390297,
+    "ast_hash": "e1ddbd23bb9a968d27eb64413b6ef8d3",
+    "semantic_hash": "e1ddbd23bb9a968d27eb64413b6ef8d3"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/Definitions/SearchLight.cs": {
+    "mtime": 1782476186.6390588,
+    "ast_hash": "e706feaa504491ee47f88487b83b868d",
+    "semantic_hash": "e706feaa504491ee47f88487b83b868d"
+  },
+  "Data/Scripts/CoreSystems/Coreparts/PartCompile.cs": {
+    "mtime": 1782476186.6390588,
+    "ast_hash": "10c4a088d3ed959ea9d5eb5b40615820",
+    "semantic_hash": "10c4a088d3ed959ea9d5eb5b40615820"
+  },
+  "Data/Scripts/CoreSystems/Definitions/CoreDefinitions.cs": {
+    "mtime": 1782476186.6392365,
+    "ast_hash": "a5229b472d933f80955c5af3303293a8",
+    "semantic_hash": "a5229b472d933f80955c5af3303293a8"
+  },
+  "Data/Scripts/CoreSystems/Definitions/CoreStructure.cs": {
+    "mtime": 1782476186.639322,
+    "ast_hash": "328f37715b7f7a090aa63b72d8c6142f",
+    "semantic_hash": "328f37715b7f7a090aa63b72d8c6142f"
+  },
+  "Data/Scripts/CoreSystems/Definitions/CoreSystems.cs": {
+    "mtime": 1782476186.6394145,
+    "ast_hash": "50a4b89e6b23ff4c6e955a3e3badb96a",
+    "semantic_hash": "50a4b89e6b23ff4c6e955a3e3badb96a"
+  },
+  "Data/Scripts/CoreSystems/Definitions/PartAnimation.cs": {
+    "mtime": 1782476186.639475,
+    "ast_hash": "f4edfa19fed14d0609ca84205d4347c3",
+    "semantic_hash": "f4edfa19fed14d0609ca84205d4347c3"
+  },
+  "Data/Scripts/CoreSystems/Definitions/SerializedConfigs/AiValues.cs": {
+    "mtime": 1782476186.639499,
+    "ast_hash": "a451be938380a175b1d4a98ea77ac3ee",
+    "semantic_hash": "a451be938380a175b1d4a98ea77ac3ee"
+  },
+  "Data/Scripts/CoreSystems/Definitions/SerializedConfigs/AmmoConstants.cs": {
+    "mtime": 1782476186.639737,
+    "ast_hash": "dfc22e510d00dd0c3880b16f26e30c0b",
+    "semantic_hash": "dfc22e510d00dd0c3880b16f26e30c0b"
+  },
+  "Data/Scripts/CoreSystems/Definitions/SerializedConfigs/ConstructValues.cs": {
+    "mtime": 1782476186.6398075,
+    "ast_hash": "51d2ccbc18573379bf79d8af6a71cd6d",
+    "semantic_hash": "51d2ccbc18573379bf79d8af6a71cd6d"
+  },
+  "Data/Scripts/CoreSystems/Definitions/SerializedConfigs/Control/ProtoControl.cs": {
+    "mtime": 1782476186.6398075,
+    "ast_hash": "990f788c68cee8f6a84243efafed4880",
+    "semantic_hash": "990f788c68cee8f6a84243efafed4880"
+  },
+  "Data/Scripts/CoreSystems/Definitions/SerializedConfigs/CoreSettings.cs": {
+    "mtime": 1782476186.639897,
+    "ast_hash": "7cde6e7890a0b922c479044b65637d2d",
+    "semantic_hash": "7cde6e7890a0b922c479044b65637d2d"
+  },
+  "Data/Scripts/CoreSystems/Definitions/SerializedConfigs/Misc.cs": {
+    "mtime": 1782476186.6399322,
+    "ast_hash": "59033d8ce05c6e70dd2186104dbe93d1",
+    "semantic_hash": "59033d8ce05c6e70dd2186104dbe93d1"
+  },
+  "Data/Scripts/CoreSystems/Definitions/SerializedConfigs/PacketTypes.cs": {
+    "mtime": 1782476186.6400025,
+    "ast_hash": "522bbfc0b82acdb550b41bfb048d2f31",
+    "semantic_hash": "522bbfc0b82acdb550b41bfb048d2f31"
+  },
+  "Data/Scripts/CoreSystems/Definitions/SerializedConfigs/Support/ProtoSupport.cs": {
+    "mtime": 1782476186.640035,
+    "ast_hash": "ff4ea9ea8a92413118435850156a6a60",
+    "semantic_hash": "ff4ea9ea8a92413118435850156a6a60"
+  },
+  "Data/Scripts/CoreSystems/Definitions/SerializedConfigs/Upgrade/ProtoUpgrade.cs": {
+    "mtime": 1782476186.6401255,
+    "ast_hash": "248b1c8f1431c11f0c9b3825227d650b",
+    "semantic_hash": "248b1c8f1431c11f0c9b3825227d650b"
+  },
+  "Data/Scripts/CoreSystems/Definitions/SerializedConfigs/Weapon/ProtoWeapon.cs": {
+    "mtime": 1782476186.6402361,
+    "ast_hash": "0674f83044c587a08966bbe58c14a7d9",
+    "semantic_hash": "0674f83044c587a08966bbe58c14a7d9"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Controls/Control/ControlActions.cs": {
+    "mtime": 1782476186.6405454,
+    "ast_hash": "e3db2b1606daf97c4d54d679d2608ee6",
+    "semantic_hash": "e3db2b1606daf97c4d54d679d2608ee6"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Controls/Control/ControlUi.cs": {
+    "mtime": 1782476186.6406763,
+    "ast_hash": "eb3793d8076b9410cabaf29c7cda5004",
+    "semantic_hash": "eb3793d8076b9410cabaf29c7cda5004"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Controls/CreateCustomActions.cs": {
+    "mtime": 1782476186.6406763,
+    "ast_hash": "f75c1b318a18c710f8e10ea448238f86",
+    "semantic_hash": "f75c1b318a18c710f8e10ea448238f86"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Controls/Support/SupportActions.cs": {
+    "mtime": 1782476186.64082,
+    "ast_hash": "c917974ff66ae1e302a682694c709524",
+    "semantic_hash": "c917974ff66ae1e302a682694c709524"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Controls/Support/SupportUi.cs": {
+    "mtime": 1782476186.6408646,
+    "ast_hash": "0d6140a6dc2d2cc8c74b8fc9c7944f14",
+    "semantic_hash": "0d6140a6dc2d2cc8c74b8fc9c7944f14"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Controls/TerminalHelpers.cs": {
+    "mtime": 1782476186.6408646,
+    "ast_hash": "56aa9252a9a09a89dfdc40177e6de89f",
+    "semantic_hash": "56aa9252a9a09a89dfdc40177e6de89f"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Controls/Upgrade/UpgradeActions.cs": {
+    "mtime": 1782476186.6411037,
+    "ast_hash": "6a4c51911266e8fd9349113efb03a81e",
+    "semantic_hash": "6a4c51911266e8fd9349113efb03a81e"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Controls/Upgrade/UpgradeUi.cs": {
+    "mtime": 1782476186.641142,
+    "ast_hash": "55dc986611cc14124b09a5e530bddede",
+    "semantic_hash": "55dc986611cc14124b09a5e530bddede"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Controls/Weapon/WeaponActions.cs": {
+    "mtime": 1782476186.641142,
+    "ast_hash": "19f68b7f869ec53b519db09e6cf898d7",
+    "semantic_hash": "19f68b7f869ec53b519db09e6cf898d7"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Controls/Weapon/WeaponUi.cs": {
+    "mtime": 1782476186.6414135,
+    "ast_hash": "3e00853ef0fb256a9099f24d0a9918c9",
+    "semantic_hash": "3e00853ef0fb256a9099f24d0a9918c9"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/EntityData.cs": {
+    "mtime": 1782476186.6414135,
+    "ast_hash": "ffdfe381481302a15c985c281a226024",
+    "semantic_hash": "ffdfe381481302a15c985c281a226024"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/EntityEvents.cs": {
+    "mtime": 1782476186.641543,
+    "ast_hash": "2e0e6e5c091b6f82d361fc17da4da791",
+    "semantic_hash": "2e0e6e5c091b6f82d361fc17da4da791"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/EntityFields.cs": {
+    "mtime": 1782476186.6415966,
+    "ast_hash": "933d0f7b7ba01370eeb8794e22653575",
+    "semantic_hash": "933d0f7b7ba01370eeb8794e22653575"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/EntityInit.cs": {
+    "mtime": 1782476186.641633,
+    "ast_hash": "3e96fc74f2d3aa2d8a4fed120392967d",
+    "semantic_hash": "3e96fc74f2d3aa2d8a4fed120392967d"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/EntityRun.cs": {
+    "mtime": 1782476186.6416817,
+    "ast_hash": "f37fd5660728741e3d555d8b394b912e",
+    "semantic_hash": "f37fd5660728741e3d555d8b394b912e"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/EntityState.cs": {
+    "mtime": 1782476186.641836,
+    "ast_hash": "7db00c1b619b6b36c01641386bbd280e",
+    "semantic_hash": "7db00c1b619b6b36c01641386bbd280e"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/EntitySupport.cs": {
+    "mtime": 1782476186.6418765,
+    "ast_hash": "64931b5626db38adfd60847b0bd9d361",
+    "semantic_hash": "64931b5626db38adfd60847b0bd9d361"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/ModelSupport/Dummies.cs": {
+    "mtime": 1782476186.6419237,
+    "ast_hash": "998d9df75559472dbceed1b887ca783c",
+    "semantic_hash": "998d9df75559472dbceed1b887ca783c"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/ModelSupport/PartInfo.cs": {
+    "mtime": 1782476186.6419966,
+    "ast_hash": "5fa476d68d82b49f5104fe08f1232447",
+    "semantic_hash": "5fa476d68d82b49f5104fe08f1232447"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/ModelSupport/RecursiveSubparts.cs": {
+    "mtime": 1782476186.6420321,
+    "ast_hash": "4319d17fbb0dd95267647b72a6ce418d",
+    "semantic_hash": "4319d17fbb0dd95267647b72a6ce418d"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Control/ControlComp.cs": {
+    "mtime": 1782476186.6420681,
+    "ast_hash": "86ddc7d527f22d7fb6e104bf91733d87",
+    "semantic_hash": "86ddc7d527f22d7fb6e104bf91733d87"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Control/ControlData.cs": {
+    "mtime": 1782476186.6421828,
+    "ast_hash": "4261fba936bf7c62fd9e3a72016f7d51",
+    "semantic_hash": "4261fba936bf7c62fd9e3a72016f7d51"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Control/ControlFields.cs": {
+    "mtime": 1782476186.6422148,
+    "ast_hash": "c6401dcfbd94cdf39cd647fa6ebca692",
+    "semantic_hash": "c6401dcfbd94cdf39cd647fa6ebca692"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Control/ControlTracking.cs": {
+    "mtime": 1782476186.6424487,
+    "ast_hash": "e7d72f5241f52564c7dd6223c7907c7a",
+    "semantic_hash": "e7d72f5241f52564c7dd6223c7907c7a"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/PartFields.cs": {
+    "mtime": 1782476186.6424487,
+    "ast_hash": "0bac62abfb51929636ed2a49d8857bca",
+    "semantic_hash": "0bac62abfb51929636ed2a49d8857bca"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/PartState.cs": {
+    "mtime": 1782476186.6424997,
+    "ast_hash": "817552242c7e41ccab64de3f0313b5a7",
+    "semantic_hash": "817552242c7e41ccab64de3f0313b5a7"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Support/SupportAv.cs": {
+    "mtime": 1782476186.6425188,
+    "ast_hash": "8c168a9d4c43c92873a3be4918aa355a",
+    "semantic_hash": "8c168a9d4c43c92873a3be4918aa355a"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Support/SupportCharge.cs": {
+    "mtime": 1782476186.6425812,
+    "ast_hash": "d9f54da333795ca1a4dfdd147c3b81d2",
+    "semantic_hash": "d9f54da333795ca1a4dfdd147c3b81d2"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Support/SupportComp.cs": {
+    "mtime": 1782476186.6426091,
+    "ast_hash": "c57e909490fa400c2eb308455dd65ef4",
+    "semantic_hash": "c57e909490fa400c2eb308455dd65ef4"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Support/SupportData.cs": {
+    "mtime": 1782476186.6426485,
+    "ast_hash": "7a3ed9b5dc8ae75d45d6b122c2e095e1",
+    "semantic_hash": "7a3ed9b5dc8ae75d45d6b122c2e095e1"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Support/SupportFields.cs": {
+    "mtime": 1782476186.6426733,
+    "ast_hash": "f64c74526f070c3ec1f8dac47267ead2",
+    "semantic_hash": "f64c74526f070c3ec1f8dac47267ead2"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Support/SupportManager.cs": {
+    "mtime": 1782476186.6426733,
+    "ast_hash": "2e1cb3ab58169f5150e643e62438f2e8",
+    "semantic_hash": "2e1cb3ab58169f5150e643e62438f2e8"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Support/SupportMisc.cs": {
+    "mtime": 1782476186.6427162,
+    "ast_hash": "dd19fe3430b30e8b80cc78fbc3cc5b4e",
+    "semantic_hash": "dd19fe3430b30e8b80cc78fbc3cc5b4e"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Support/SupportTypes.cs": {
+    "mtime": 1782476186.6427479,
+    "ast_hash": "2c0c8c98066a802b7c8425644c6ad507",
+    "semantic_hash": "2c0c8c98066a802b7c8425644c6ad507"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Upgrade/UpgradeComp.cs": {
+    "mtime": 1782476186.6427479,
+    "ast_hash": "ff4937fa93d8723d0c07d4bc3b79804d",
+    "semantic_hash": "ff4937fa93d8723d0c07d4bc3b79804d"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Upgrade/UpgradeData.cs": {
+    "mtime": 1782476186.6428196,
+    "ast_hash": "e27eb5397f7cd56469d410b98d36c7a5",
+    "semantic_hash": "e27eb5397f7cd56469d410b98d36c7a5"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Upgrade/UpgradeFields.cs": {
+    "mtime": 1782476186.6428196,
+    "ast_hash": "b0456d2ed64776594c249c91519ddd53",
+    "semantic_hash": "b0456d2ed64776594c249c91519ddd53"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Upgrade/UpgradeTypes.cs": {
+    "mtime": 1782476186.6428196,
+    "ast_hash": "6be336d251a76b5548c1033b73cf6bfe",
+    "semantic_hash": "6be336d251a76b5548c1033b73cf6bfe"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponAv.cs": {
+    "mtime": 1782476186.6429408,
+    "ast_hash": "2a33e5921ec1587881c0deb86b23c4ef",
+    "semantic_hash": "2a33e5921ec1587881c0deb86b23c4ef"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponComp.cs": {
+    "mtime": 1782476186.643057,
+    "ast_hash": "b5e749fefad4eca18628766afcc7c042",
+    "semantic_hash": "b5e749fefad4eca18628766afcc7c042"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponController.cs": {
+    "mtime": 1782476186.643142,
+    "ast_hash": "295f4c543ca20e309a911840d685de7e",
+    "semantic_hash": "295f4c543ca20e309a911840d685de7e"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponData.cs": {
+    "mtime": 1782476186.6431887,
+    "ast_hash": "b457714b40e24f8e93013d75c81ede42",
+    "semantic_hash": "b457714b40e24f8e93013d75c81ede42"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponFields.cs": {
+    "mtime": 1782476186.6432629,
+    "ast_hash": "5ea98b3a9fe9eb0d3aad3f0c054b34bb",
+    "semantic_hash": "5ea98b3a9fe9eb0d3aad3f0c054b34bb"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponHand.cs": {
+    "mtime": 1782476186.6433077,
+    "ast_hash": "a60ef874bb1b0b33f27fd0d6b4f5742c",
+    "semantic_hash": "a60ef874bb1b0b33f27fd0d6b4f5742c"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponReload.cs": {
+    "mtime": 1782476186.6433764,
+    "ast_hash": "ef4a43c15f4d17733408863a069c6a18",
+    "semantic_hash": "ef4a43c15f4d17733408863a069c6a18"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponShoot.cs": {
+    "mtime": 1782476186.6434753,
+    "ast_hash": "aa1ee9225346bbf8f21bbaf49f5b34a0",
+    "semantic_hash": "aa1ee9225346bbf8f21bbaf49f5b34a0"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponState.cs": {
+    "mtime": 1782476186.6435475,
+    "ast_hash": "6e153b57ca4c8760ccfd878eccc1ccee",
+    "semantic_hash": "6e153b57ca4c8760ccfd878eccc1ccee"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponTracking.cs": {
+    "mtime": 1782476186.6437178,
+    "ast_hash": "8f91bc939fde183b397de9a9bb7240b7",
+    "semantic_hash": "8f91bc939fde183b397de9a9bb7240b7"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/Parts/Weapon/WeaponTypes.cs": {
+    "mtime": 1782476186.643826,
+    "ast_hash": "99001b09456f0595b234a7fa4e411c4d",
+    "semantic_hash": "99001b09456f0595b234a7fa4e411c4d"
+  },
+  "Data/Scripts/CoreSystems/EntityComp/PlatformInit.cs": {
+    "mtime": 1782476186.643826,
+    "ast_hash": "212670f0c5e4245faaacc056522d6b31",
+    "semantic_hash": "212670f0c5e4245faaacc056522d6b31"
+  },
+  "Data/Scripts/CoreSystems/Projectiles/Dtree.cs": {
+    "mtime": 1782476186.643826,
+    "ast_hash": "954c5cc8a031c05235cac9c3665e0fa2",
+    "semantic_hash": "954c5cc8a031c05235cac9c3665e0fa2"
+  },
+  "Data/Scripts/CoreSystems/Projectiles/Projectile.cs": {
+    "mtime": 1782476186.6444929,
+    "ast_hash": "413e65e06abffde237db36aff9f2e00a",
+    "semantic_hash": "413e65e06abffde237db36aff9f2e00a"
+  },
+  "Data/Scripts/CoreSystems/Projectiles/ProjectileGen.cs": {
+    "mtime": 1782476186.6446207,
+    "ast_hash": "6e73620321154038fa6b6cfeb331e953",
+    "semantic_hash": "6e73620321154038fa6b6cfeb331e953"
+  },
+  "Data/Scripts/CoreSystems/Projectiles/ProjectileHits.cs": {
+    "mtime": 1782476186.6447651,
+    "ast_hash": "cbb4b02ea5d17252c20ebe7072f6d8a1",
+    "semantic_hash": "cbb4b02ea5d17252c20ebe7072f6d8a1"
+  },
+  "Data/Scripts/CoreSystems/Projectiles/ProjectileTypes.cs": {
+    "mtime": 1782476186.6448574,
+    "ast_hash": "1fa0ffe9e9c38d223efa1c835395d0b3",
+    "semantic_hash": "1fa0ffe9e9c38d223efa1c835395d0b3"
+  },
+  "Data/Scripts/CoreSystems/Projectiles/Projectiles.cs": {
+    "mtime": 1782476186.6449378,
+    "ast_hash": "950c6382ab30b62aff758b7c57ad75b0",
+    "semantic_hash": "950c6382ab30b62aff758b7c57ad75b0"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionAnimationMgr.cs": {
+    "mtime": 1782476186.6450543,
+    "ast_hash": "1065f95aeee62988f455544803d19bcc",
+    "semantic_hash": "1065f95aeee62988f455544803d19bcc"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionCharging.cs": {
+    "mtime": 1782476186.6451094,
+    "ast_hash": "562672eca2fbfb7b526a53887d1f322c",
+    "semantic_hash": "562672eca2fbfb7b526a53887d1f322c"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionCleanUp.cs": {
+    "mtime": 1782476186.645153,
+    "ast_hash": "3db752a4264e325d531fa77f563dc630",
+    "semantic_hash": "3db752a4264e325d531fa77f563dc630"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionCompMgr.cs": {
+    "mtime": 1782476186.6451995,
+    "ast_hash": "6be2cb1e7f5855b45d1feebf4085ff02",
+    "semantic_hash": "6be2cb1e7f5855b45d1feebf4085ff02"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionControls.cs": {
+    "mtime": 1782476186.645273,
+    "ast_hash": "b0976b84033ce005b64f278c7facd140",
+    "semantic_hash": "b0976b84033ce005b64f278c7facd140"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionDamageMgr.cs": {
+    "mtime": 1782476186.6454387,
+    "ast_hash": "597e63d66984f20426fccbbcdaafbad4",
+    "semantic_hash": "597e63d66984f20426fccbbcdaafbad4"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionEvents.cs": {
+    "mtime": 1782476186.6455476,
+    "ast_hash": "0c518c3c8efb407759eacc5d6fe95d4c",
+    "semantic_hash": "0c518c3c8efb407759eacc5d6fe95d4c"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionEwar.cs": {
+    "mtime": 1782476186.645641,
+    "ast_hash": "856f0742b8c220d82bb4f7067e05b288",
+    "semantic_hash": "856f0742b8c220d82bb4f7067e05b288"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionFields.cs": {
+    "mtime": 1782476186.6457715,
+    "ast_hash": "967ed011d597a56887134b332751e6f8",
+    "semantic_hash": "967ed011d597a56887134b332751e6f8"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionFutureEvents.cs": {
+    "mtime": 1782476186.6458232,
+    "ast_hash": "84e4276d12d2ba77dc4055d42ab6914b",
+    "semantic_hash": "84e4276d12d2ba77dc4055d42ab6914b"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionInit.cs": {
+    "mtime": 1782476186.645916,
+    "ast_hash": "0dcf23718d1ad0dee5bd6460e0738afc",
+    "semantic_hash": "0dcf23718d1ad0dee5bd6460e0738afc"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionInventory.cs": {
+    "mtime": 1782476186.6459723,
+    "ast_hash": "59b9a7c72f0ce40daa4315e521f61b1b",
+    "semantic_hash": "59b9a7c72f0ce40daa4315e521f61b1b"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionJobs.cs": {
+    "mtime": 1782476186.6460412,
+    "ast_hash": "a606c5bb7e3aedf71a5d01abe620d010",
+    "semantic_hash": "a606c5bb7e3aedf71a5d01abe620d010"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionLocalPlayer.cs": {
+    "mtime": 1782476186.6461055,
+    "ast_hash": "8056d22e95d43c29bc75a463a6b6ea5a",
+    "semantic_hash": "8056d22e95d43c29bc75a463a6b6ea5a"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionModHandlers.cs": {
+    "mtime": 1782476186.6461585,
+    "ast_hash": "77944916e404873af926d83f4bceb4a6",
+    "semantic_hash": "77944916e404873af926d83f4bceb4a6"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionNetwork.cs": {
+    "mtime": 1782476186.6462657,
+    "ast_hash": "2ef520b3f99be3aa8272327fe95c4884",
+    "semantic_hash": "2ef520b3f99be3aa8272327fe95c4884"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionNetworkCMethods.cs": {
+    "mtime": 1782476186.6464171,
+    "ast_hash": "ab3affd5f49fd2e16a8f9be8dc438225",
+    "semantic_hash": "ab3affd5f49fd2e16a8f9be8dc438225"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionNetworkSMethods.cs": {
+    "mtime": 1782476186.64655,
+    "ast_hash": "ff97f4408e3acae0994de18ad5113075",
+    "semantic_hash": "ff97f4408e3acae0994de18ad5113075"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionNetworkSupport.cs": {
+    "mtime": 1782476186.6466804,
+    "ast_hash": "06f89202931673188c458e2a2f32d5e2",
+    "semantic_hash": "06f89202931673188c458e2a2f32d5e2"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionRun.cs": {
+    "mtime": 1782476186.6467726,
+    "ast_hash": "289cf35ca3990f41862dca2f646f84cb",
+    "semantic_hash": "289cf35ca3990f41862dca2f646f84cb"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionSupport.cs": {
+    "mtime": 1782476186.6469774,
+    "ast_hash": "d4e8b979dd756fe5f6352db58125373c",
+    "semantic_hash": "d4e8b979dd756fe5f6352db58125373c"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionTypes.cs": {
+    "mtime": 1782476186.6471329,
+    "ast_hash": "9751d99cf7ec3709493765c7d11f0d99",
+    "semantic_hash": "9751d99cf7ec3709493765c7d11f0d99"
+  },
+  "Data/Scripts/CoreSystems/Session/SessionUpdate.cs": {
+    "mtime": 1782476186.6472826,
+    "ast_hash": "149366566bc7db9218e5e593a05c0f91",
+    "semantic_hash": "149366566bc7db9218e5e593a05c0f91"
+  },
+  "Data/Scripts/CoreSystems/Support/AdvSyncProjectileController.cs": {
+    "mtime": 1782476186.6473913,
+    "ast_hash": "c45ec20c572469bd775b36236e2d92ed",
+    "semantic_hash": "c45ec20c572469bd775b36236e2d92ed"
+  },
+  "Data/Scripts/CoreSystems/Support/Api/NerdShieldAPI.cs": {
+    "mtime": 1782476186.6474247,
+    "ast_hash": "256b68ad5fdd8fbe6b9d423cfd97f3dd",
+    "semantic_hash": "256b68ad5fdd8fbe6b9d423cfd97f3dd"
+  },
+  "Data/Scripts/CoreSystems/Support/Api/ShieldApi.cs": {
+    "mtime": 1782476186.6475368,
+    "ast_hash": "3ce2a2806d9cbffe944f1be5abee5d7a",
+    "semantic_hash": "3ce2a2806d9cbffe944f1be5abee5d7a"
+  },
+  "Data/Scripts/CoreSystems/Support/Api/WaterModAPI.cs": {
+    "mtime": 1782476186.6475992,
+    "ast_hash": "45cc68bfbb679e23ae65a3d353115966",
+    "semantic_hash": "45cc68bfbb679e23ae65a3d353115966"
+  },
+  "Data/Scripts/CoreSystems/Support/DebugLog.cs": {
+    "mtime": 1782476186.6475992,
+    "ast_hash": "af0109093364e82ffc134bc32d7b54ba",
+    "semantic_hash": "af0109093364e82ffc134bc32d7b54ba"
+  },
+  "Data/Scripts/CoreSystems/Support/DebugSupport.cs": {
+    "mtime": 1782476186.6476793,
+    "ast_hash": "b043b97d9a7c05ebf5fb9a353b417eb1",
+    "semantic_hash": "b043b97d9a7c05ebf5fb9a353b417eb1"
+  },
+  "Data/Scripts/CoreSystems/Support/Draw/DebugDraw.cs": {
+    "mtime": 1782476186.647706,
+    "ast_hash": "3fc7c8737d863fd62d1b381ae0a84e8d",
+    "semantic_hash": "3fc7c8737d863fd62d1b381ae0a84e8d"
+  },
+  "Data/Scripts/CoreSystems/Support/Draw/DrawExts.cs": {
+    "mtime": 1782476186.647779,
+    "ast_hash": "fed07423234ef57371c3e36874cfee23",
+    "semantic_hash": "fed07423234ef57371c3e36874cfee23"
+  },
+  "Data/Scripts/CoreSystems/Support/FireDistribution/AdvancedFireDistributionSystem.cs": {
+    "mtime": 1782476186.6478865,
+    "ast_hash": "44f58ed4d0971463a7b78c106bad50f5",
+    "semantic_hash": "44f58ed4d0971463a7b78c106bad50f5"
+  },
+  "Data/Scripts/CoreSystems/Support/FireDistribution/FireDistribution.cs": {
+    "mtime": 1782476186.6480258,
+    "ast_hash": "bb5d6bd11d3a2b3c2974bde41474d44f",
+    "semantic_hash": "bb5d6bd11d3a2b3c2974bde41474d44f"
+  },
+  "Data/Scripts/CoreSystems/Support/FireDistribution/FireDistributionSupport.cs": {
+    "mtime": 1782476186.6482766,
+    "ast_hash": "a138cecef73a85f92fcea9303af43386",
+    "semantic_hash": "a138cecef73a85f92fcea9303af43386"
+  },
+  "Data/Scripts/CoreSystems/Support/FireDistribution/Implementation/AdvancedClosestFireDistributionSystem.cs": {
+    "mtime": 1782476186.6483095,
+    "ast_hash": "18e161667718a1b0ae1e45539d63fcd0",
+    "semantic_hash": "18e161667718a1b0ae1e45539d63fcd0"
+  },
+  "Data/Scripts/CoreSystems/Support/FireDistribution/Implementation/AdvancedScreeningFireDistributionSystem.cs": {
+    "mtime": 1782476186.6483645,
+    "ast_hash": "958da7b727992c0be9ba3de0ec1dbaa4",
+    "semantic_hash": "958da7b727992c0be9ba3de0ec1dbaa4"
+  },
+  "Data/Scripts/CoreSystems/Support/FireDistribution/Implementation/BasicFireDistributionSystem.cs": {
+    "mtime": 1782476186.6484191,
+    "ast_hash": "5065300794b967e73f85788412d60f9a",
+    "semantic_hash": "5065300794b967e73f85788412d60f9a"
+  },
+  "Data/Scripts/CoreSystems/Support/GridIntersect.cs": {
+    "mtime": 1782476186.6484191,
+    "ast_hash": "211f509250f35138a6c0e53b896657f2",
+    "semantic_hash": "211f509250f35138a6c0e53b896657f2"
+  },
+  "Data/Scripts/CoreSystems/Support/Localization.cs": {
+    "mtime": 1782476186.6487877,
+    "ast_hash": "9086cf7660ff69f20595fd04bf06f61c",
+    "semantic_hash": "9086cf7660ff69f20595fd04bf06f61c"
+  },
+  "Data/Scripts/CoreSystems/Support/Log.cs": {
+    "mtime": 1782476186.6488724,
+    "ast_hash": "77f7466e8d3baaa52d1333359e9baa44",
+    "semantic_hash": "77f7466e8d3baaa52d1333359e9baa44"
+  },
+  "Data/Scripts/CoreSystems/Support/MathFuncs.cs": {
+    "mtime": 1782476186.6489353,
+    "ast_hash": "5f26b1bbe07ebf6b3d355c4bfdd167ab",
+    "semantic_hash": "5f26b1bbe07ebf6b3d355c4bfdd167ab"
+  },
+  "Data/Scripts/CoreSystems/Support/MiscTypes.cs": {
+    "mtime": 1782476186.6490026,
+    "ast_hash": "360b1e1962dd4f7c6d778e8bbfb6ed2a",
+    "semantic_hash": "360b1e1962dd4f7c6d778e8bbfb6ed2a"
+  },
+  "Data/Scripts/CoreSystems/Support/OrderedPacketDictionary.cs": {
+    "mtime": 1782476186.649044,
+    "ast_hash": "b00427ccc8ebe85a6db0c5fa7a72dab8",
+    "semantic_hash": "b00427ccc8ebe85a6db0c5fa7a72dab8"
+  },
+  "Data/Scripts/CoreSystems/Support/RingBuffer.cs": {
+    "mtime": 1782476186.6490736,
+    "ast_hash": "2f84ac6177344b163249181d5afa4550",
+    "semantic_hash": "2f84ac6177344b163249181d5afa4550"
+  },
+  "Data/Scripts/CoreSystems/Support/StaticUtils.cs": {
+    "mtime": 1782476186.6491277,
+    "ast_hash": "62e6e06e11fde771a6d5762e4bf690b4",
+    "semantic_hash": "62e6e06e11fde771a6d5762e4bf690b4"
+  },
+  "Data/Scripts/CoreSystems/Support/Utils.cs": {
+    "mtime": 1782476186.6491787,
+    "ast_hash": "e766672aeb7698276e66bf1f804b6a28",
+    "semantic_hash": "e766672aeb7698276e66bf1f804b6a28"
+  },
+  "Data/Scripts/CoreSystems/Support/VersionControl.cs": {
+    "mtime": 1782476186.649237,
+    "ast_hash": "5b3866b71370e18dd1926fc2eb2c5b2d",
+    "semantic_hash": "5b3866b71370e18dd1926fc2eb2c5b2d"
+  },
+  "Data/Scripts/CoreSystems/Support/VoxelIntersect.cs": {
+    "mtime": 1782476186.6492918,
+    "ast_hash": "2cb00ebe4db1ee685e1c6c9a48286c82",
+    "semantic_hash": "2cb00ebe4db1ee685e1c6c9a48286c82"
+  },
+  "Data/Scripts/CoreSystems/Ui/Hud/HudDraw.cs": {
+    "mtime": 1782476186.6493351,
+    "ast_hash": "92ab140022de77edbe2f53ac3e2c5f12",
+    "semantic_hash": "92ab140022de77edbe2f53ac3e2c5f12"
+  },
+  "Data/Scripts/CoreSystems/Ui/Hud/HudFields.cs": {
+    "mtime": 1782476186.6494434,
+    "ast_hash": "43d2fbf0943992702dd3a18d8814ea84",
+    "semantic_hash": "43d2fbf0943992702dd3a18d8814ea84"
+  },
+  "Data/Scripts/CoreSystems/Ui/Hud/HudSupport.cs": {
+    "mtime": 1782476186.6494982,
+    "ast_hash": "7522d28925ade7d94d0847a51fa6e5ba",
+    "semantic_hash": "7522d28925ade7d94d0847a51fa6e5ba"
+  },
+  "Data/Scripts/CoreSystems/Ui/Hud/HudText.cs": {
+    "mtime": 1782476186.649575,
+    "ast_hash": "04f0161b859bddd89ed056587f64cc6e",
+    "semantic_hash": "04f0161b859bddd89ed056587f64cc6e"
+  },
+  "Data/Scripts/CoreSystems/Ui/Hud/HudTextMaps.cs": {
+    "mtime": 1782476186.6496642,
+    "ast_hash": "aef8f55c8e238e0f4aafa73e03e8427b",
+    "semantic_hash": "aef8f55c8e238e0f4aafa73e03e8427b"
+  },
+  "Data/Scripts/CoreSystems/Ui/Targeting/SupportClasses.cs": {
+    "mtime": 1782476186.6496642,
+    "ast_hash": "0910a249ba8f7fbe3773f9cb6456537e",
+    "semantic_hash": "0910a249ba8f7fbe3773f9cb6456537e"
+  },
+  "Data/Scripts/CoreSystems/Ui/Targeting/TargetUiDraw.cs": {
+    "mtime": 1782476186.6498513,
+    "ast_hash": "e3597d4ff941db5e8cce0fc8ed1e29bc",
+    "semantic_hash": "e3597d4ff941db5e8cce0fc8ed1e29bc"
+  },
+  "Data/Scripts/CoreSystems/Ui/Targeting/TargetUiFields.cs": {
+    "mtime": 1782476186.649951,
+    "ast_hash": "82c802a81133c297dd8c2ce81e243f47",
+    "semantic_hash": "82c802a81133c297dd8c2ce81e243f47"
+  },
+  "Data/Scripts/CoreSystems/Ui/Targeting/TargetUiSelect.cs": {
+    "mtime": 1782476186.6500247,
+    "ast_hash": "dd1a961ae920ff4318333cba6cb78d27",
+    "semantic_hash": "dd1a961ae920ff4318333cba6cb78d27"
+  },
+  "Data/Scripts/CoreSystems/Ui/UiInput.cs": {
+    "mtime": 1782476186.6500247,
+    "ast_hash": "d916641033f0a6a85c5f62e31f18aab0",
+    "semantic_hash": "d916641033f0a6a85c5f62e31f18aab0"
+  },
+  ".github/ISSUE_TEMPLATE/bug-report.md": {
+    "mtime": 1782476186.6284275,
+    "ast_hash": "a660f30c1a26942e8aa4795e75da890d",
+    "semantic_hash": "a660f30c1a26942e8aa4795e75da890d"
+  },
+  ".github/ISSUE_TEMPLATE/feature_request.md": {
+    "mtime": 1782476186.62847,
+    "ast_hash": "3d0d79fc7e74d6026a6cc3788b27de2d",
+    "semantic_hash": "3d0d79fc7e74d6026a6cc3788b27de2d"
+  },
+  ".github/ISSUE_TEMPLATE/wiki-issue.md": {
+    "mtime": 1782476186.62847,
+    "ast_hash": "5f6dec3649b06d08ce8bc36c69c03ba4",
+    "semantic_hash": "5f6dec3649b06d08ce8bc36c69c03ba4"
+  },
+  "CONTRIBUTING.md": {
+    "mtime": 1782476186.6354,
+    "ast_hash": "6813a468a8126560f27842a963e6b7ae",
+    "semantic_hash": "6813a468a8126560f27842a963e6b7ae"
+  },
+  "README.md": {
+    "mtime": 1782476186.6654797,
+    "ast_hash": "900031fb921ce8a334a5222879d8d3c7",
+    "semantic_hash": "900031fb921ce8a334a5222879d8d3c7"
+  },
+  "packages/System.Xml.XmlSerializer.4.3.0/ThirdPartyNotices.txt": {
+    "mtime": 1478321856.0,
+    "ast_hash": "c967cb8266866e70f817fee256966091",
+    "semantic_hash": "c967cb8266866e70f817fee256966091"
+  },
+  "packages/System.Xml.XmlSerializer.4.3.0/dotnet_library_license.txt": {
+    "mtime": 1478321856.0,
+    "ast_hash": "db62529d9c74388f3885fad4b435b3f7",
+    "semantic_hash": "db62529d9c74388f3885fad4b435b3f7"
+  },
+  ".github/Falloff.JPG": {
+    "mtime": 1782476186.627711,
+    "ast_hash": "f9985e2a923ac24c28eb040e2603dedf",
+    "semantic_hash": "f9985e2a923ac24c28eb040e2603dedf"
+  },
+  ".github/depth.JPG": {
+    "mtime": 1782476186.62847,
+    "ast_hash": "c9afe4e95635d521ffa7f8e460043374",
+    "semantic_hash": "c9afe4e95635d521ffa7f8e460043374"
+  },
+  ".github/diamond.jpg": {
+    "mtime": 1782476186.62847,
+    "ast_hash": "859986e401c4ef449f6aa5ed1b530553",
+    "semantic_hash": "859986e401c4ef449f6aa5ed1b530553"
+  },
+  ".github/lead_indicators.png": {
+    "mtime": 1782476186.62847,
+    "ast_hash": "40dcc1464a75b15e0b8c00894c20ead0",
+    "semantic_hash": "40dcc1464a75b15e0b8c00894c20ead0"
+  },
+  ".github/radial30.jpg": {
+    "mtime": 1782476186.630431,
+    "ast_hash": "024611481722d9c8bc51f8faa15ee3ba",
+    "semantic_hash": "024611481722d9c8bc51f8faa15ee3ba"
+  },
+  ".github/radial90.jpg": {
+    "mtime": 1782476186.6314309,
+    "ast_hash": "67b5244b6e28b5f639122f042f24bcf3",
+    "semantic_hash": "67b5244b6e28b5f639122f042f24bcf3"
+  },
+  ".github/round.jpg": {
+    "mtime": 1782476186.6324308,
+    "ast_hash": "21dd2ea0d862d218951b7b0079a5bb83",
+    "semantic_hash": "21dd2ea0d862d218951b7b0079a5bb83"
+  },
+  "Textures/GUI/lockon_gif.gif": {
+    "mtime": 1782476186.6994627,
+    "ast_hash": "3f663302203bdc771c02358c112ab25f",
+    "semantic_hash": "3f663302203bdc771c02358c112ab25f"
+  },
+  "Audio/ARC/WEP/ArcWepShipGatlingShot3d01.wav": {
+    "mtime": 1782476186.6338673,
+    "ast_hash": "3dc7006253b9530b770530a800b6d3b0",
+    "semantic_hash": "3dc7006253b9530b770530a800b6d3b0"
+  },
+  "Audio/ARC/WEP/ArcWepShipGatlingShot3d02.wav": {
+    "mtime": 1782476186.6343277,
+    "ast_hash": "b07616549557c143b64d41f24eb14949",
+    "semantic_hash": "b07616549557c143b64d41f24eb14949"
+  },
+  "Audio/ARC/WEP/ArcWepShipGatlingShot3d03.wav": {
+    "mtime": 1782476186.634554,
+    "ast_hash": "21592956e5f46c96be5390af72ee6764",
+    "semantic_hash": "21592956e5f46c96be5390af72ee6764"
+  },
+  "Audio/ARC/WEP/ArcWepShipGatlingShot3d04.wav": {
+    "mtime": 1782476186.6347654,
+    "ast_hash": "ed7b3f793c39b1c22bbfcb41d29d2853",
+    "semantic_hash": "ed7b3f793c39b1c22bbfcb41d29d2853"
+  },
+  "Audio/ARC/WEP/ArcWepShipGatlingShot3d05.wav": {
+    "mtime": 1782476186.634975,
+    "ast_hash": "ea34b4d884996a7a77556c2d2c255466",
+    "semantic_hash": "ea34b4d884996a7a77556c2d2c255466"
+  },
+  "Audio/ARC/WEP/ArcWepShipGatlingShot3d06.wav": {
+    "mtime": 1782476186.6351871,
+    "ast_hash": "f31fa6ce5bb036f9551839e5d1a8730e",
+    "semantic_hash": "f31fa6ce5bb036f9551839e5d1a8730e"
+  },
+  "Audio/ARC/WEP/ArcWepShipGatlingShot3d07.wav": {
+    "mtime": 1782476186.6354,
+    "ast_hash": "f256f2e9fba3636dec837344650c770a",
+    "semantic_hash": "f256f2e9fba3636dec837344650c770a"
+  }
+}

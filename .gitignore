@@ -332,6 +332,9 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
+
+# MDK local machine paths
+*.mdk.local.ini
 Models/Cubes/AmmoOrb.blockdef.xml
 Models/Cubes/AmmoOrb.fbx
 Models/Cubes/AmmoOrb.xml
@@ -341,3 +344,7 @@ Models/Cubes/AmmoOrb.xml
 /Data/Models
 /WeaponCore.csproj.bak
 Textures/GUI/WC_NewHUD_Icons.psd
+
+graphify-out/cache/
+
+graphify-out/cost.json
