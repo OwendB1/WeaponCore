@@ -414,6 +414,7 @@ namespace CoreSystems
             IMySlimBlock rootBlock = null;
             var d = t.AmmoDef.DamageScales;
             var armor = t.AmmoDef.DamageScales.Armor;
+            var cutoffArmor = t.AmmoDef.DamageScales.ArmorForCutoff;
             //Target/targeting Info
             var attackerId = t.Weapon.Comp.CoreEntity.EntityId;
             var maxObjects = t.AmmoDef.Const.MaxObjectsHit;
@@ -662,11 +663,15 @@ namespace CoreSystems
                         var cubeBlockDef = (MyCubeBlockDefinition)block.BlockDefinition;
                         float cachedIntegrity;
                         var blockHp = (double)(!IsClient ? block.Integrity - block.AccumulatedDamage : (_slimHealthClient.TryGetValue(block, out cachedIntegrity) ? cachedIntegrity : block.Integrity));
+                        var rawHp = blockHp; // current effective HP before the damage-scaling mutation below. Used for the sacrificial integrity ratio.
+                        ResistanceValues acv = default(ResistanceValues);
+                        var haveAcv = ArmorCoreActive && ArmorCoreBlockMap.TryGetValue(block.BlockDefinition.Id.SubtypeId, out acv);
                         var blockDmgModifier = cubeBlockDef.GeneralDamageMultiplier;
                         double damageScale = hits;
                         double directDamageScale = Settings.Enforcement.DirectDamageModifer * hitEnt.DamageMulti;
                         double areaDamageScale = Settings.Enforcement.AreaDamageModifer * hitEnt.DamageMulti;
                         double detDamageScale = areaDamageScale;
+                        double cutoffDamageScale = 1f;
 
                         //Damage scaling for blocktypes
                         if (aConst.DamageScaling || !MyUtils.IsEqual(blockDmgModifier, 1f) || !MyUtils.IsEqual(gridDamageModifier, 1f))
@@ -690,6 +695,14 @@ namespace CoreSystems
                                     damageScale *= aConst.SmallGridDmgScale;
                             }
 
+                            if (aConst.GridCutoffScaling)
+                            {
+                                if (largeGrid)
+                                    cutoffDamageScale *= aConst.LargeGridCutoffDmgScale; // these are set to 1 in aConst if not set
+                                else
+                                    cutoffDamageScale *= aConst.SmallGridCutoffDmgScale;
+                            }
+
                             MyDefinitionBase blockDef = null;
                             if (aConst.ArmorScaling)
                             {
@@ -709,17 +722,38 @@ namespace CoreSystems
                                 }
                             }
 
+                            if (aConst.ArmorCutoffScaling)
+                            {
+                                blockDef = block.BlockDefinition;
+                                var isArmor = AllArmorBaseDefinitions.Contains(blockDef) || CustomArmorSubtypes.Contains(blockDef.Id.SubtypeId);
+                                if (isArmor && cutoffArmor.Armor >= 0)
+                                    cutoffDamageScale *= cutoffArmor.Armor;
+                                else if (!isArmor && cutoffArmor.NonArmor >= 0)
+                                    cutoffDamageScale *= cutoffArmor.NonArmor;
+                                if (isArmor && (cutoffArmor.Light >= 0 || cutoffArmor.Heavy >= 0))
+                                {
+                                    var isHeavy = HeavyArmorBaseDefinitions.Contains(blockDef) || CustomHeavyArmorSubtypes.Contains(blockDef.Id.SubtypeId);
+                                    if (isHeavy && cutoffArmor.Heavy >= 0)
+                                        cutoffDamageScale *= cutoffArmor.Heavy;
+                                    else if (!isHeavy && cutoffArmor.Light >= 0)
+                                        cutoffDamageScale *= cutoffArmor.Light;
+                                }
+                            }
+
                             if (aConst.CustomDamageScales)
                             {
                                 if (blockDef == null)
                                     blockDef = block.BlockDefinition;
-                                float modifier = 1f;
+                                MyTuple<float, float> modifier = new MyTuple<float, float>(1,1);
                                 var found = aConst.CustomBlockDefinitionBasesToScales.TryGetValue(blockDef, out modifier);
                                 var inclusive = t.AmmoDef.DamageScales.Custom.SkipOthers == CustomScalesDef.SkipMode.Inclusive;
                                 var exclusive = t.AmmoDef.DamageScales.Custom.SkipOthers == CustomScalesDef.SkipMode.Exclusive;
 
                                 if ((t.AmmoDef.DamageScales.Custom.SkipOthers == CustomScalesDef.SkipMode.NoSkip || exclusive) && found)
-                                    damageScale *= modifier;
+                                {
+                                    damageScale *= modifier.Item1;
+                                    cutoffDamageScale *= modifier.Item2;
+                                }
                                 else if ((exclusive && !found) || (inclusive && found))
                                     continue;
                             }
@@ -739,16 +773,11 @@ namespace CoreSystems
                                 }
                             }
 
-                            if (ArmorCoreActive)
+                            if (haveAcv)
                             {
-                                var subtype = block.BlockDefinition.Id.SubtypeId;
-                                if (ArmorCoreBlockMap.ContainsKey(subtype))
-                                {
-                                    var resistances = ArmorCoreBlockMap[subtype];
-                                    directDamageScale /= t.AmmoDef.Const.EnergyBaseDmg ? resistances.EnergeticResistance : resistances.KineticResistance;
-                                    areaDamageScale /= t.AmmoDef.Const.EnergyAreaDmg ? resistances.EnergeticResistance : resistances.KineticResistance;
-                                    detDamageScale /= t.AmmoDef.Const.EnergyDetDmg ? resistances.EnergeticResistance : resistances.KineticResistance;
-                                }
+                                directDamageScale /= t.AmmoDef.Const.EnergyBaseDmg ? acv.EnergeticResistance : acv.KineticResistance;
+                                areaDamageScale /= t.AmmoDef.Const.EnergyAreaDmg ? acv.EnergeticResistance : acv.KineticResistance;
+                                detDamageScale /= t.AmmoDef.Const.EnergyDetDmg ? acv.EnergeticResistance : acv.KineticResistance;
                             }
 
                             if (fallOff)
@@ -759,26 +788,53 @@ namespace CoreSystems
                         var primaryDamage = rootStep && block == rootBlock && !detActive;//limits application to first run w/AOE, suppresses with detonation
 
                         var baseScale = damageScale * directDamageScale * smallVsLargeBuff * gridSizeBuff;
-                        var scaledDamage = (float)((useBaseCutoff ? cutoff : basePool) * baseScale);
+                        var scaledDamage = (float)(basePool * baseScale);
+                        var scaledCutoff = (float)(cutoff * cutoffDamageScale * baseScale);
+                        
+                        if (useBaseCutoff && scaledDamage > scaledCutoff)
+                            scaledDamage = scaledCutoff;
+
+
                         var aoeScaledDmg = (float)((aoeDamageFall * (detActive ? detDamageScale : areaDamageScale)) * damageScale * gridSizeBuff);
-                        bool deadBlock = false;
-                        //Check for end of primary life
-                        if (primaryDamage && scaledDamage <= blockHp)
+
+                        //MinDamage gate rejects primary hits that do not exceed the threshold. The block takes no damage, but the projectile is still charged
+                        //the damage pool it would have spent on this hit.
+                        if (primaryDamage && haveAcv && acv.MinDamage > 0 && scaledDamage <= acv.MinDamage)
                         {
-                            t.DamageDonePri += (long)scaledDamage;
-                            if (useBaseCutoff)
-                                basePool -= scaledDamage;
-                            else
+                            var scale = baseScale == 0d ? 0.0000001 : baseScale;
+                            basePool -= (float)(scaledDamage / scale); // convert dealt damage back to pool units, matching the kill branch
+                            if (basePool < 0)
                                 basePool = 0;
                             t.BaseDamagePool = basePool;
+                            continue;
+                        }
+
+                        bool deadBlock = false;
+                        //A primary hit clearing both MinDamage and MinDamageSacrificial destroys this block and ends the projectile,
+                        //but only while the block's integrity ratio is at or above SacrificialIntegrityThreshold
+                        if (primaryDamage && haveAcv && acv.IsSacrificialArmor && scaledDamage > acv.MinDamage && scaledDamage > acv.MinDamageSacrificial
+                            && (acv.SacrificialIntegrityThreshold <= 0 || (block.MaxIntegrity > 0 && rawHp / block.MaxIntegrity >= acv.SacrificialIntegrityThreshold)))
+                        {
+                            t.DamageDonePri += (long)scaledDamage;
+                            deadBlock = true;
+                            scaledDamage = (float)blockHp; // force enough damage to destroy the block even if the hit was below its HP
+                            basePool = 0;
+                            t.BaseDamagePool = basePool;
                             detRequested = hasDet;
+                        }
+                        //Check for end of primary life
+                        else if (primaryDamage && scaledDamage < blockHp)
+                        {
+                            t.DamageDonePri += (long)scaledDamage;
+                            basePool -= (float)(scaledDamage / (baseScale == 0d ? 0.0000001 : baseScale));
+                            t.BaseDamagePool = basePool;
+                            detRequested = basePool <= 0 && hasDet;
                         }
                         else if (primaryDamage)
                         {
                             t.DamageDonePri += (long)scaledDamage;
                             deadBlock = true;
-                            var scale = baseScale == 0d ? 0.0000001 : baseScale;
-                            basePool -= (float)(blockHp / scale);
+                            basePool -= (float)(blockHp / (baseScale == 0d ? 0.0000001 : baseScale));
                         }
 
                         if (countBlocksAsObjects && (primaryDamage || !primaryDamage && countBlocksAsObjects && !t.AmmoDef.ObjectsHit.SkipBlocksForAOE))

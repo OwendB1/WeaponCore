@@ -195,12 +195,14 @@ namespace CoreSystems.Projectiles
                     HadTarget = HadTargetState.Fake;
                     break;
                 case Target.TargetStates.IsEntity:
-                    if (eTarget == null)
+                    if (eTarget == null || eTarget.Closed)
                     {
                         HadTarget = HadTargetState.None;
                         Info.Target.TargetState = Target.TargetStates.None;
                         TargetPosition = Vector3D.Zero;
-                        Log.Line($"ProjectileStart had invalid entity target state, isFragment: {Info.IsFragment} - ammo:{ammoDef.AmmoRound} - weapon:{Info.Weapon.System.ShortName}");
+                        if (eTarget == null)
+                            Log.Line($"ProjectileStart had invalid entity target state, isFragment: {Info.IsFragment} - ammo:{ammoDef.AmmoRound} - weapon:{Info.Weapon.System.ShortName}");
+                        
                         break;
                     }
 
@@ -1086,7 +1088,7 @@ namespace CoreSystems.Projectiles
 
                 if (approach.HasAngleOffset)
                 {
-                    if (stageChange && approach.ModAngleOffset)
+                    if (stageChange && approach.ModAngleOffset && !(Session.I.AdvSyncClient && aConst.FullSync))
                     {
                         var min = approach.Definition.AngleVariance.Start;
                         var max = approach.Definition.AngleVariance.End;
@@ -1769,6 +1771,11 @@ namespace CoreSystems.Projectiles
                 ++storage.ApproachInfo.Storage[storage.RequestedStage].RunCount;
                 storage.LastActivatedStage = aConst.Approaches.Length;
                 storage.RequestedStage = aConst.Approaches.Length;
+            }
+
+            if (Session.I.AdvSyncServer && Info.AdvSyncId != 0)
+            {
+                SendAdvSyncPositionPacket();
             }
         }
 

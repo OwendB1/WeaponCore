@@ -223,6 +223,10 @@ namespace CoreSystems.Api
             [ProtoMember(3)] internal double KineticResistance;
             [ProtoMember(4)] internal double EnergeticResistance;
             [ProtoMember(5)] internal int DefinitionPriority;
+            [ProtoMember(6)] internal int MinDamage;
+            [ProtoMember(7)] internal bool IsSacrificialArmor;
+            [ProtoMember(8)] internal int MinDamageSacrificial;
+            [ProtoMember(9)] internal float SacrificialIntegrityThreshold;
         }
 
         [ProtoContract]
@@ -690,6 +694,8 @@ namespace CoreSystems.Api
                     [ProtoMember(12)] internal bool ProhibitLGTargeting;
                     [ProtoMember(13)] internal bool ProhibitSGTargeting;
                     [ProtoMember(14)] internal bool ProhibitSubsystemChanges;
+                    [ProtoMember(15)] internal bool DisableOwnGridLosCheck;
+                    [ProtoMember(16)] internal bool AllowNoTargetFiring;
                 }
 
                 [ProtoContract]
@@ -739,7 +745,7 @@ namespace CoreSystems.Api
                 [ProtoMember(34)] internal bool IgnoreGrids;
                 [ProtoMember(35)] internal bool AllowNegativeHeatModifier;
                 [ProtoMember(36)] internal int HeatNeededToFire;
-
+                [ProtoMember(37)] internal bool GridsTargetSeekersTargetingThis;
 
                 [ProtoContract]
                 public struct SynchronizeDef
@@ -1539,6 +1545,9 @@ namespace CoreSystems.Api
                             DistanceToTarget,
                             DistanceFromEndTrajectory,
                             DistanceToEndTrajectory,
+                            ReaquiredTarget,
+                            EnemySeekersGreaterThanEqualTo,
+                            EnemySeekersLessThanEqualTo,
                         }
 
                         public enum UpRelativeTo
@@ -1574,6 +1583,24 @@ namespace CoreSystems.Api
                             ForwardRelativeToShooter,
                             ForwardOriginDirection,
                         }
+
+                        public enum RelativeTo
+                        {
+                            Origin,
+                            Shooter,
+                            Target,
+                            Surface,
+                            MidPoint,
+                            PositionA,
+                            Nothing,
+                            StoredStartDontUse,
+                            StoredEndDontUse,
+                            StoredStartPosition,
+                            StoredEndPosition,
+                            StoredStartLocalPosition,
+                            StoredEndLocalPosition,
+                        }
+
                         public enum ModelRelativeTo
                         {
                             ModelNone = 0,
@@ -1591,22 +1618,6 @@ namespace CoreSystems.Api
                             ModelOriginForwards,
                             ModelOriginUp,
                             ModelAcceleration,
-                        }
-                        public enum RelativeTo
-                        {
-                            Origin,
-                            Shooter,
-                            Target,
-                            Surface,
-                            MidPoint,
-                            PositionA,
-                            Nothing,
-                            StoredStartDontUse,
-                            StoredEndDontUse,
-                            StoredStartPosition,
-                            StoredEndPosition,
-                            StoredStartLocalPosition,
-                            StoredEndLocalPosition,
                         }
 
                         public enum ConditionOperators
@@ -1628,6 +1639,7 @@ namespace CoreSystems.Api
                             StorePositionA,
                             StorePositionB,
                             StorePositionC,
+                            ForceRetarget,
                         }
 
                         [ProtoContract]
@@ -1640,6 +1652,8 @@ namespace CoreSystems.Api
                             [ProtoMember(4)] public double End2WeightMod;
                             [ProtoMember(5)] public int MaxRuns;
                             [ProtoMember(6)] public double End3WeightMod;
+                            [ProtoMember(7)] public double End4WeightMod;
+                            [ProtoMember(8)] public double End5WeightMod;
                         }
 
                         [ProtoMember(1)] internal ReInitCondition RestartCondition;
@@ -1720,7 +1734,7 @@ namespace CoreSystems.Api
                         [ProtoMember(76)] internal float ModelMaximumAngleToRotate;
                     }
 
-                        [ProtoContract]
+                    [ProtoContract]
                     public struct MinesDef
                     {
                         [ProtoMember(1)] internal double DetectRadius;

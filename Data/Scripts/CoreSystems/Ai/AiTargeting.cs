@@ -787,7 +787,7 @@ namespace CoreSystems.Support
                                 continue;
                             }
 
-                            if (ent is MyPlanet)
+                            if (ent is MyPlanet || ent.MarkedForClose || ent.Closed)
                             {
                                 if (isFromManager)
                                 {
@@ -1364,7 +1364,7 @@ namespace CoreSystems.Support
                 var card = deck[i];
                 var block = subSystemList[card];
 
-                if (block.MarkedForClose || checkPower && !(block is IMyWarhead) && !block.IsWorking) continue;
+                if (block.MarkedForClose || checkPower && !(block is IMyWarhead || block is MyCockpit) && !block.IsWorking) continue;
                 s.BlockChecks++;
 
                 // Inline to keep the profiler happy:
@@ -1413,9 +1413,8 @@ namespace CoreSystems.Support
                     var ctcCam = w.RotorTurretTracking && w.Comp.Ai.ControlComp?.Controller.Camera != null;
                     var testPos = ctcCam ? w.Comp.Ai.ControlComp.Controller.Camera.GetPosition() : w.BarrelOrigin + (targetDirNorm * w.MuzzleDistToBarrelCenter);
                     var targetDist = Vector3D.Distance(testPos, blockPos);
-
+                    var targTestPos = testPos + targetDirNorm * (targetDist + block.CubeGrid.GridSize);
                     var fakeCheck = w.System.NoVoxelLosCheck;
-
                     bool acquire = false;
                     double closest = double.MaxValue;
                     if (!aConst.SkipRayChecks)
@@ -1427,21 +1426,21 @@ namespace CoreSystems.Support
                             var lowFiVoxels = distSqr > oneHalfKmSqr && (ai.PlanetSurfaceInRange || ai.ClosestVoxelSqr <= oneHalfKmSqr);
                             var filter = lowFiVoxels ? CollisionLayers.DefaultCollisionLayer : CollisionLayers.VoxelLod1CollisionLayer;
 
-                            IHitInfo iHitInfo;
+                            IHitInfo iHitInfo = null;
                             MyCubeGrid rayGrid = null;
-                            if (ai.AiType == AiTypes.Grid && physics.CastRay(testPos, blockPos, out iHitInfo, CollisionLayers.NoVoxelCollisionLayer))
+                            if (ai.AiType == AiTypes.Grid && physics.CastRay(testPos, targTestPos, out iHitInfo, CollisionLayers.NoVoxelCollisionLayer))
                             {
                                 rayGrid = iHitInfo.HitEntity?.GetTopMostParent() as MyCubeGrid;
                                 if (rayGrid != null && rayGrid.IsSameConstructAs(ai.GridEntity))
                                     continue;
                             }
-                            if (rayGrid != null && block.CubeGrid == rayGrid)
+                            if ((rayGrid != null && block.CubeGrid == rayGrid) || (block is MyCockpit && iHitInfo?.HitEntity == null))
                             {
                                 acquire = true;
                             }
                             else
                             {
-                                physics.CastRay(testPos, blockPos, hitTmpList, filter);
+                                physics.CastRay(testPos, targTestPos, hitTmpList, filter);
                                 for (int j = 0; j < hitTmpList.Count; j++)
                                 {
                                     var hitInfo = hitTmpList[j];

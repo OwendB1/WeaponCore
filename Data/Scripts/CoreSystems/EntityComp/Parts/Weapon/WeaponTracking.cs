@@ -319,6 +319,9 @@ namespace CoreSystems.Platform
             var pTarget = target.TargetObject as Projectile;
             var tEntity = target.TargetObject as MyEntity;
 
+            if (tEntity != null && tEntity.MarkedForClose)
+                return false;
+
             Ai.FakeTarget.FakeWorldTargetInfo fakeTargetInfo = null;
             if (w.Comp.FakeMode && w.ValidFakeTargetInfo(baseData.State.PlayerId, out fakeTargetInfo))
                 targetCenter = fakeTargetInfo.WorldPosition;
@@ -1656,7 +1659,7 @@ namespace CoreSystems.Platform
         internal bool ValidSubSystemTarget(MyCubeBlock cube, WeaponDefinition.TargetingDef.BlockTypes subsystem)
         {
             bool isValid;
-            
+            var cockpit = cube as MyCockpit;
             switch (subsystem)
             {
                 case WeaponDefinition.TargetingDef.BlockTypes.Jumping:
@@ -1672,14 +1675,13 @@ namespace CoreSystems.Platform
                     isValid = cube is IMyProductionBlock || cube is IMyUpgradeModule && Session.I.VanillaUpgradeModuleHashes.Contains(cube.BlockDefinition.Id.SubtypeName) || cube is IMyDecoy;
                     break;
                 case WeaponDefinition.TargetingDef.BlockTypes.Steering:
-                    var cockpit = cube as MyCockpit;
                     isValid = cube is MyGyro || cockpit != null && cockpit.EnableShipControl || cube is IMyDecoy;
                     break;
                 case WeaponDefinition.TargetingDef.BlockTypes.Thrust:
                     isValid = cube is MyThrust || cube is IMyDecoy;
                     break;
                 case WeaponDefinition.TargetingDef.BlockTypes.Utility:
-                    isValid = !(cube is IMyProductionBlock) && cube is IMyUpgradeModule || cube is IMyRadioAntenna || cube is IMyLaserAntenna || cube is MyRemoteControl || cube is IMyShipToolBase || cube is IMyMedicalRoom || cube is IMyCameraBlock || cube is IMyDecoy; 
+                    isValid = !(cube is IMyProductionBlock) && cube is IMyUpgradeModule || cockpit != null && !cockpit.EnableShipControl || cube is IMyRadioAntenna || cube is IMyLaserAntenna || cube is MyRemoteControl || cube is IMyShipToolBase || cube is IMyMedicalRoom || cube is IMyCameraBlock || cube is IMyDecoy; 
                     break;
                 default:
                     return false;

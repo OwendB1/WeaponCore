@@ -20,6 +20,7 @@ using static CoreSystems.Support.WeaponDefinition.AmmoDef.GraphicDef.LineDef;
 using static CoreSystems.Support.WeaponDefinition.AmmoDef.GraphicDef.LineDef.FactionColor;
 using static CoreSystems.Settings.CoreSettings.ServerSettings;
 using static CoreSystems.Session;
+using VRage;
 
 namespace CoreSystems.Support
 {
@@ -39,7 +40,7 @@ namespace CoreSystems.Support
 
         public readonly Stack<ApproachInfo> ApproachInfoPool;
         public readonly MyConcurrentPool<MyEntity> PrimeEntityPool;
-        public readonly Dictionary<MyDefinitionBase, float> CustomBlockDefinitionBasesToScales;
+        public readonly Dictionary<MyDefinitionBase, MyTuple<float, float>> CustomBlockDefinitionBasesToScales;
         public readonly Dictionary<MyStringHash, MyStringHash> TextureHitMap = new Dictionary<MyStringHash, MyStringHash>();
         public readonly PreComputedMath PreComputedMath;
         public readonly MySoundPair TravelSoundPair;
@@ -263,8 +264,13 @@ namespace CoreSystems.Support
         public readonly bool OverrideWeaponEffect;
         public readonly bool IgnoreAntiSmarts;
         public readonly bool GridsTargetSeekersTargetingThis;
+        public readonly bool Targetable;
+        public readonly bool GridCutoffScaling;
+        public readonly bool ArmorCutoffScaling;
         public readonly float LargeGridDmgScale;
         public readonly float SmallGridDmgScale;
+        public readonly float LargeGridCutoffDmgScale;
+        public readonly float SmallGridCutoffDmgScale;
         public readonly float CharacterDmgScale;
         public readonly float OffsetRatio;
         public readonly float PowerPerTick;
@@ -411,6 +417,9 @@ namespace CoreSystems.Support
 
                     if (hasGuidance && ammoType.Trajectory.Smarts.OverideTarget)
                         fragTargetOverride = true;
+
+                    if (ammoType.Health > 0)
+                        Targetable = true;
                 }
             }
 
@@ -525,7 +534,7 @@ namespace CoreSystems.Support
             ComputeApproaches(ammo, wDef, out ApproachesCount, out Approaches, out ApproachInfoPool, out HasApproaches, out HasRefund);
             ComputeAmmoPattern(ammo, system, wDef, fragGuidedAmmo, fragAntiSmart, fragTargetOverride, out AntiSmartDetected, out TargetOverrideDetected, out AmmoPattern, out WeaponPatternCount, out FragPatternCount, out GuidedAmmoDetected, out WeaponPattern, out FragmentPattern);
 
-            DamageScales(ammo.AmmoDef, out DamageScaling, out FallOffScaling, out ArmorScaling, out GridScaling, out CustomDamageScales, out CustomBlockDefinitionBasesToScales, out SelfDamage, out VoxelDamage, out HealthHitModifier, out VoxelHitModifier, out DeformDelay, out LargeGridDmgScale, out SmallGridDmgScale, out CharacterDmgScale);
+            DamageScales(ammo.AmmoDef, out DamageScaling, out FallOffScaling, out ArmorScaling, out GridScaling, out CustomDamageScales, out CustomBlockDefinitionBasesToScales, out SelfDamage, out VoxelDamage, out HealthHitModifier, out VoxelHitModifier, out DeformDelay, out LargeGridDmgScale, out SmallGridDmgScale, out CharacterDmgScale, out ArmorCutoffScaling, out GridCutoffScaling, out LargeGridCutoffDmgScale, out SmallGridCutoffDmgScale);
             CollisionShape(ammo.AmmoDef, out CollisionIsLine, out CollisionSize, out TracerLength);
             
             SmartsDelayDistSqr = (CollisionSize * ammo.AmmoDef.Trajectory.Smarts.TrackingDelay) * (CollisionSize * ammo.AmmoDef.Trajectory.Smarts.TrackingDelay);
@@ -588,7 +597,7 @@ namespace CoreSystems.Support
 
             if (CollisionSize > 5 && !Session.I.LocalVersion) Log.Line($"{ammo.AmmoDef.AmmoRound} has large largeCollisionSize: {CollisionSize} meters");
 
-            FullSync = ammo.AmmoDef.Sync.Full && Session.I.MpActive && (IsDrone || IsSmart);
+            FullSync = ammo.AmmoDef.Sync.Full && Session.I.MpActive;
             PdDeathSync = FullSync && ammo.AmmoDef.Sync.PointDefense && Health > 0 && !IsBeamWeapon && !Ewar;
             OnHitDeathSync = FullSync && ammo.AmmoDef.Sync.OnHitDeath && !IsBeamWeapon && !Ewar;
             PositionSyncInterval = FullSync ? ammo.AmmoDef.Sync.PositionSyncInterval : 0;
@@ -600,6 +609,22 @@ namespace CoreSystems.Support
             PFlags(ammo, out ProjectileTags);
             ComputeAdvBillboards(ammo.AmmoDef, out AdvBillboardSettings, out DrawAdvBillboards);
             PreComputedMath = new PreComputedMath(ammo, this);
+
+
+            Targetable |= Health > 0;
+
+            if (!Targetable && AmmoPattern != null)
+            {
+                foreach (var a in AmmoPattern)
+                {
+                    if (a != null && a.Health > 0)
+                    {
+                        Targetable = true;
+                        break;
+                    }
+                }
+            }
+            
         }
 
         internal void ComputeAdvBillboards(AmmoDef ammo, out AdvBillboards billboards, out bool DrawAdvBillboards)
@@ -1243,7 +1268,7 @@ namespace CoreSystems.Support
             collisionSize = size;
         }
 
-        private void DamageScales(AmmoDef ammoDef, out bool damageScaling, out bool fallOffScaling, out bool armorScaling, out bool gridScaling, out bool customDamageScales, out Dictionary<MyDefinitionBase, float> customBlockDef, out bool selfDamage, out bool voxelDamage, out double healthHitModifer, out double voxelHitModifer, out int deformDelay, out float largeGridDmgScale, out float smallGridDmgScale, out float characterDmgScale)
+        private void DamageScales(AmmoDef ammoDef, out bool damageScaling, out bool fallOffScaling, out bool armorScaling, out bool gridScaling, out bool customDamageScales, out Dictionary<MyDefinitionBase, MyTuple<float, float>> customBlockDef, out bool selfDamage, out bool voxelDamage, out double healthHitModifer, out double voxelHitModifer, out int deformDelay, out float largeGridDmgScale, out float smallGridDmgScale, out float characterDmgScale, out bool armorCutoffScaling, out bool gridCutoffScaling, out float LargeGridCutoffDmgScale, out float SmallGridCutoffDmgScale)
         {
             var d = ammoDef.DamageScales;
             customBlockDef = null;
@@ -1251,22 +1276,31 @@ namespace CoreSystems.Support
             armorScaling = false;
             gridScaling = false;
             fallOffScaling = false;
+            gridCutoffScaling = false;
+            armorCutoffScaling = false;
             largeGridDmgScale = 0;
             smallGridDmgScale = 0;
+            LargeGridCutoffDmgScale = 0;
+            SmallGridCutoffDmgScale = 0;
 
             if (d.Custom.Types != null && d.Custom.Types.Length > 0)
             {
                 foreach (var def in MyDefinitionManager.Static.GetAllDefinitions())
                     foreach (var customDef in d.Custom.Types)
-                        if (customDef.Modifier >= 0 && def.Id.SubtypeId.String == customDef.SubTypeId)
+                        if ((customDef.Modifier >= 0 || customDef.CutoffModifier > 0) && def.Id.SubtypeId.String == customDef.SubTypeId)
                         {
-                            if (customBlockDef == null) customBlockDef = new Dictionary<MyDefinitionBase, float>();
-                            customBlockDef.Add(def, customDef.Modifier);
+                            if (customBlockDef == null) customBlockDef = new Dictionary<MyDefinitionBase, MyTuple<float, float>>();
+                            customBlockDef.Add(def, new MyTuple<float, float>()
+                            {
+                                Item1 = customDef.Modifier >= 0 ? customDef.Modifier : 1f,
+                                Item2 = customDef.CutoffModifier > 0 ? customDef.CutoffModifier : 1f,
+                            });
                             customDamageScales = customBlockDef.Count > 0;
                         }
             }
 
-            damageScaling = FallOffMinMultiplier > 0 && !MyUtils.IsZero(FallOffMinMultiplier - 1) || d.MaxIntegrity > 0 || d.Armor.Armor >= 0 || d.Armor.NonArmor >= 0 || d.Armor.Heavy >= 0 || d.Armor.Light >= 0 || d.Grids.Large >= 0 || d.Grids.Small >= 0 || customDamageScales || ArmorCoreActive;
+            damageScaling = FallOffMinMultiplier > 0 && !MyUtils.IsZero(FallOffMinMultiplier - 1) || d.MaxIntegrity > 0 || d.Armor.Armor >= 0 || d.Armor.NonArmor >= 0 || d.Armor.Heavy >= 0 || d.Armor.Light >= 0 || d.Grids.Large >= 0 || d.Grids.Small >= 0 || customDamageScales || ArmorCoreActive
+                || (ammoDef.BaseDamageCutoff > 0 && (d.GridSizeForCutoff.Large > 0 || d.GridSizeForCutoff.Small > 0 || d.ArmorForCutoff.Armor > 0 || d.ArmorForCutoff.NonArmor > 0 || d.ArmorForCutoff.Heavy > 0 || d.ArmorForCutoff.Light > 0));
 
             if (damageScaling)
             {
@@ -1275,6 +1309,14 @@ namespace CoreSystems.Support
                 gridScaling = !ammoDef.NoGridOrArmorScaling && (d.Grids.Large >= 0 || d.Grids.Small >= 0);
                 largeGridDmgScale = d.Grids.Large;
                 smallGridDmgScale = d.Grids.Small;
+
+                if (ammoDef.BaseDamageCutoff > 0)
+                {
+                    gridCutoffScaling = !ammoDef.NoGridOrArmorScaling && (d.GridSizeForCutoff.Large > 0 || d.GridSizeForCutoff.Small > 0);
+                    LargeGridCutoffDmgScale = d.GridSizeForCutoff.Large > 0 ? d.GridSizeForCutoff.Large : 1f;
+                    SmallGridCutoffDmgScale = d.GridSizeForCutoff.Small > 0 ? d.GridSizeForCutoff.Small : 1f;
+                    armorCutoffScaling = !ammoDef.NoGridOrArmorScaling && (d.ArmorForCutoff.Armor > 0 || d.ArmorForCutoff.NonArmor > 0 || d.ArmorForCutoff.Heavy > 0 || d.ArmorForCutoff.Light > 0);
+                }
             }
             selfDamage = d.SelfDamage;
             voxelDamage = d.DamageVoxels;
@@ -1743,7 +1785,8 @@ namespace CoreSystems.Support
                 {
                     var tempDmg = GetShrapnelDamage(fragmentAmmo, parentFragments, shotsPerSec, parentFragments);
                     var fragFrags = 1.0f;
-                    if (parentAmmo.Fragment.Fragments > 0) fragFrags = parentAmmo.Fragment.Fragments;
+                    if (parentAmmo.Fragment.Fragments > 0)
+                        fragFrags = parentAmmo.Fragment.Fragments;
                     if (parentAmmo.Fragment.TimedSpawns.Enable && parentAmmo.Fragment.TimedSpawns.GroupSize > 0)
                     {
                         var b = parentAmmo.Fragment.TimedSpawns;
