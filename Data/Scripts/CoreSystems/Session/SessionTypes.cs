@@ -259,7 +259,7 @@ namespace CoreSystems
                 }
                 CompileReport();
 
-                Log.CleanLine($"{Report}", "report");
+                Log.CleanLine($"{Report}", Log.ReportLog);
 
                 Clean();
             }

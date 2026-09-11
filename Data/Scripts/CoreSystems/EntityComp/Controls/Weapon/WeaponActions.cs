@@ -3,6 +3,7 @@ using System.Text;
 using CoreSystems.Platform;
 using CoreSystems.Support;
 using Sandbox.ModAPI;
+using VRage.Game;
 using VRage.Utils;
 using VRageMath;
 using static CoreSystems.Support.CoreComponent.Trigger;
@@ -12,6 +13,20 @@ namespace CoreSystems.Control
     public static partial class CustomActions
     {
         #region Call Actions
+
+        internal static void StartCountDown(IMyTerminalBlock block)
+        {
+            var comp = block?.Components?.Get<CoreComponent>() as Weapon.WeaponComponent;
+            if (comp == null || comp.Platform.State != CorePlatform.PlatformState.Ready) return;
+            Weapon.WeaponComponent.RequestCountDown(comp, true);
+        }
+
+        internal static void StopCountDown(IMyTerminalBlock block)
+        {
+            var comp = block?.Components?.Get<CoreComponent>() as Weapon.WeaponComponent;
+            if (comp == null || comp.Platform.State != CorePlatform.PlatformState.Ready) return;
+            Weapon.WeaponComponent.RequestCountDown(comp, false);
+        }
 
         internal static void RequestSetArmed(IMyTerminalBlock blk)
         {
@@ -140,14 +155,63 @@ namespace CoreSystems.Control
             if (comp == null || comp.Platform.State != CorePlatform.PlatformState.Ready)
                 return;
             
-            var numValue = (int)comp.Data.Repo.Values.Set.Overrides.Control;
-            int value;
-            if (Session.I.Settings.Enforcement.ProhibitHUDPainter)
-                value = numValue == 1 ? 0 : 1;
-            else
-                value = numValue + 1 <= 2 ? numValue + 1 : 0;
+            var numValue = comp.Data.Repo.Values.Set.Overrides.Control;
 
-            Weapon.WeaponComponent.RequestSetValue(comp, WeaponOverrideSetting.ControlModes, value, Session.I.PlayerId);
+            var mask = comp.PrimaryWeapon.System.WConst.ValidControlModes;
+            if (Session.I.Settings.Enforcement.ProhibitHUDPainter)
+            {
+                mask &= ~WeaponDefinition.TargetingDef.ControlModes.Painter;
+
+                if (mask == WeaponDefinition.TargetingDef.ControlModes.Invalid)
+                    mask = WeaponDefinition.TargetingDef.ControlModes.Automatic;
+            }
+            
+
+            ProtoWeaponOverrides.ControlModes newVal;
+            switch (numValue)
+            {
+                case ProtoWeaponOverrides.ControlModes.Auto:
+                    if ((mask & WeaponDefinition.TargetingDef.ControlModes.Manual) != 0)
+                    {
+                        newVal = ProtoWeaponOverrides.ControlModes.Manual;
+                        break;
+                    }
+                    if ((mask & WeaponDefinition.TargetingDef.ControlModes.Painter) != 0)
+                    {
+                        newVal = ProtoWeaponOverrides.ControlModes.Painter;
+                        break;
+                    }
+                    newVal = ProtoWeaponOverrides.ControlModes.Auto;
+                    break;
+                case ProtoWeaponOverrides.ControlModes.Manual:
+                    if ((mask & WeaponDefinition.TargetingDef.ControlModes.Painter) != 0)
+                    {
+                        newVal = ProtoWeaponOverrides.ControlModes.Painter;
+                        break;
+                    }
+                    if ((mask & WeaponDefinition.TargetingDef.ControlModes.Automatic) != 0)
+                    {
+                        newVal = ProtoWeaponOverrides.ControlModes.Auto;
+                        break;
+                    }
+                    newVal = ProtoWeaponOverrides.ControlModes.Manual;
+                    break;
+                default: // Painter
+                    if ((mask & WeaponDefinition.TargetingDef.ControlModes.Automatic) != 0)
+                    {
+                        newVal = ProtoWeaponOverrides.ControlModes.Auto;
+                        break;
+                    }
+                    if ((mask & WeaponDefinition.TargetingDef.ControlModes.Manual) != 0)
+                    {
+                        newVal = ProtoWeaponOverrides.ControlModes.Manual;
+                        break;
+                    }
+                    newVal = ProtoWeaponOverrides.ControlModes.Painter;
+                    break;
+            }
+
+            Weapon.WeaponComponent.RequestSetValue(comp, WeaponOverrideSetting.ControlModes, (int)newVal, Session.I.PlayerId);
         }
 
         internal static void TerminalActionMovementMode(IMyTerminalBlock blk)
@@ -802,6 +866,24 @@ namespace CoreSystems.Control
             var message = comp.Data.Repo.Values.Set.Overrides.ShootMode == Weapon.ShootManager.ShootModes.MouseControl ? Localization.GetText("ShootMouse") : Localization.GetText("ControlsInactive"); 
 
             sb.Append(message);
+        }
+
+        internal static void GetArmedTimeRemaining(IMyTerminalBlock block, StringBuilder sb)
+        {
+            var comp = block?.Components?.Get<CoreComponent>() as Weapon.WeaponComponent;
+            if (comp == null || comp.Platform.State != CorePlatform.PlatformState.Ready) return;
+
+            var value = (float)Math.Round(comp.Data.Repo.Values.Set.Overrides.ArmedTimer * MyEngineConstants.PHYSICS_STEP_SIZE_IN_SECONDS, 2);
+
+            if (value >= 59.95)
+                sb.Append("00:01:00");
+            else if (value < 0.33)
+                sb.Append("00:00:00");
+            else
+            {
+                sb.Append("00:")
+                    .Append(value.ToString("00:00"));
+            }
         }
 
         internal static void DecoyWriter(IMyTerminalBlock blk, StringBuilder sb)

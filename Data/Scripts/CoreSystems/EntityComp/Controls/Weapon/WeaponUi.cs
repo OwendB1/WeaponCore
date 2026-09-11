@@ -893,7 +893,7 @@ namespace CoreSystems
             if (!ready)
             {
                 var ammoState = comp.AmmoStatus();
-                Log.Line($"Shoot failed: wait:{comp.ShootManager.WaitingShootResponse} - freeze:{comp.ShootManager.FreezeClientShoot} - lockTime:{Session.I.Tick - comp.ShootManager.WaitingTick} - shootTime:{Session.I.Tick - comp.ShootManager.LastShootTick} - cycles:{comp.ShootManager.CompletedCycles} - ammoState:{ammoState} ", Session.InputLog);
+                Log.Line($"Shoot failed: wait:{comp.ShootManager.WaitingShootResponse} - freeze:{comp.ShootManager.FreezeClientShoot} - lockTime:{Session.I.Tick - comp.ShootManager.WaitingTick} - shootTime:{Session.I.Tick - comp.ShootManager.LastShootTick} - cycles:{comp.ShootManager.CompletedCycles} - ammoState:{ammoState} ", Log.InputLog);
                 var overWaitTime = comp.ShootManager.WaitingTick > 0 && Session.I.Tick - comp.ShootManager.WaitingTick > 180;
                 var overFreezeTime = comp.ShootManager.FreezeTick > 0 && Session.I.Tick - comp.ShootManager.FreezeTick > 180;
 
@@ -902,7 +902,7 @@ namespace CoreSystems
 
                 if (freezeOver || waitOver)
                 {
-                    Log.Line($"freezeOver:{freezeOver} - waitOver:{waitOver} - higherClientCount:{higherClientCount}", Session.InputLog);
+                    Log.Line($"freezeOver:{freezeOver} - waitOver:{waitOver} - higherClientCount:{higherClientCount}", Log.InputLog);
                     comp.ShootManager.FailSafe();
                 }
             }
@@ -1142,18 +1142,11 @@ namespace CoreSystems
         {
             foreach (var sub in ControlList)
             {
-                if (sub.Key != 2 || !Session.I.Settings.Enforcement.ProhibitHUDPainter)
-                    controlList.Add(sub);
+                controlList.Add(sub);
             }
-            
         }
 
-        private static readonly List<MyTerminalControlComboBoxItem> ControlList = new List<MyTerminalControlComboBoxItem>
-        {
-            new MyTerminalControlComboBoxItem { Key = 0, Value = MyStringId.GetOrCompute(Localization.GetText("ControlAuto")) },
-            new MyTerminalControlComboBoxItem { Key = 1, Value = MyStringId.GetOrCompute(Localization.GetText("ControlManual")) },
-            new MyTerminalControlComboBoxItem { Key = 2, Value = MyStringId.GetOrCompute(Localization.GetText("ControlPainter")) },
-        };
+        public static readonly List<MyTerminalControlComboBoxItem> ControlList = new List<MyTerminalControlComboBoxItem>();
 
         internal static void ListDecoySubSystems(List<MyTerminalControlComboBoxItem> subSystemList)
         {

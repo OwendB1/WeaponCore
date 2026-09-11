@@ -512,7 +512,7 @@ namespace CoreSystems
                 }
                 else
                 {
-                    Log.Line($"ServerShootSyncs failed: - mode:{signal} - {type}", InputLog);
+                    Log.Line($"ServerShootSyncs failed: - mode:{signal} - {type}", Log.InputLog);
                 }
             }
 

@@ -17,6 +17,7 @@ using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
 using Sandbox.ModAPI.Weapons;
 using ShieldAPI;
+using ToolCore.API;
 using VRage;
 using VRage.Collections;
 using VRage.Game;
@@ -75,6 +76,8 @@ namespace CoreSystems
         internal readonly TargetCompare TargetCompare = new TargetCompare();
         internal readonly WaterModAPI WApi = new WaterModAPI();
         internal readonly NerdShieldAPI NSApi = new NerdShieldAPI();
+        internal readonly TCApi TCApi = new TCApi();
+
         internal readonly CustomHitInfo CustomHitInfo = new CustomHitInfo();
 
         internal readonly MyStringHash ShieldBypassDamageType = MyStringHash.GetOrCompute("bypass");
@@ -200,6 +203,7 @@ namespace CoreSystems
         internal readonly Dictionary<ulong, Projectile> ProjectilesByNetId = new Dictionary<ulong, Projectile>();
 
         internal float ClientOwlTicks;
+        internal double RateCompensation = 1;
         internal readonly Dictionary<ulong, TickLatency> PlayerTickLatency = new Dictionary<ulong, TickLatency>();
         internal readonly Dictionary<long, DamageHandlerRegistrant> DamageHandlerRegistrants = new Dictionary<long, DamageHandlerRegistrant>();
         internal readonly Dictionary<long, Func<MyEntity, IMyCharacter, long, int, bool>> TargetFocusHandlers = new Dictionary<long, Func<MyEntity, IMyCharacter, long, int, bool>>();
@@ -269,7 +273,8 @@ namespace CoreSystems
         internal readonly List<CleanSound> SoundsToClean = new List<CleanSound>(128);
         internal readonly List<LosDebug> LosDebugList = new List<LosDebug>(128);
         internal readonly List<MyTuple<IMyPlayer, Vector4, FakeTarget>> ActiveMarks = new List<MyTuple<IMyPlayer, Vector4, FakeTarget>>();
-        
+        internal readonly List<MyStringHash> TCDefList = new List<MyStringHash>();
+
         internal readonly List<Weapon>[] LeadGroups = new List<Weapon>[4];
         internal readonly Queue<double> ClientPerfHistory = new Queue<double>(20);
         internal readonly int[] AuthorSettings = new int[6];
@@ -493,6 +498,8 @@ namespace CoreSystems
         internal bool NerdShieldApiLoaded;
         internal bool ShieldApiLoaded;
         internal bool WaterApiLoaded;
+        internal bool ToolCoreMod;
+        internal bool ToolCoreModApiLoaded;
         internal bool InGridAiBlock;
         internal bool IsCreative;
         internal bool IsClient;

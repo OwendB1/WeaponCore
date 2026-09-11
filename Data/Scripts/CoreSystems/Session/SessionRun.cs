@@ -372,17 +372,23 @@ namespace CoreSystems
             if (!LogInit)
             {
                 LogInit = true;
-                Log.Init("debug", this);
-                Log.Init("perf", this, false);
-                Log.Init("stats", this, false);
-                Log.Init("net", this, false);
-                Log.Init("report", this, false);
-                Log.Init("combat", this, false);
-                Log.Init("ammostats", this, false);
-                Log.Init("wepstats", this, false);
-                Log.Init("dmgstats", this, false);
-                Log.Init("griddmgstats", this, false);
-                Log.Init(InputLog, this, false);
+                Log.Init(Log.ShootGateLog, this, false);
+                Log.Init(Log.ReloadSyncLog, this, false);
+                Log.Init(Log.TargetSyncLog, this, false);
+                Log.Init(Log.CycleSyncLog, this, false);
+                Log.Init(Log.DebugLog, this);
+                Log.Init(Log.PerfLog, this, false);
+                Log.Init(Log.StatsLog, this, false);
+                Log.Init(Log.NetLog, this, false);
+                Log.Init(Log.ReportLog, this, false);
+                Log.Init(Log.CombatLog, this, false);
+                Log.Init(Log.AmmoStatsLog, this, false);
+                Log.Init(Log.WepStatsLog, this, false);
+                Log.Init(Log.DmgStatsLog, this, false);
+                Log.Init(Log.GridDmgStatsLog, this, false);
+
+                Log.Init(Log.ShootLog, this, false);
+                Log.Init(Log.InputLog, this, false);
             }
 
             ModChecker();
@@ -458,7 +464,7 @@ namespace CoreSystems
             {
                 var x = pair.Value;
                 var total = x.Primary + x.AOE + x.Shield + x.Projectile;
-                if (total>0)Log.Stats($"{x.TerminalName}\t{x.WepCount}\t{total}\t{x.Primary}\t{x.AOE}\t{x.Shield}\t{x.Projectile}\t", "dmgstats");
+                if (total>0)Log.Stats($"{x.TerminalName}\t{x.WepCount}\t{total}\t{x.Primary}\t{x.AOE}\t{x.Shield}\t{x.Projectile}\t", Log.DmgStatsLog);
             }
             ApiServer.Unload();
 

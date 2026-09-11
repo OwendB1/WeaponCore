@@ -259,7 +259,7 @@ namespace WeaponCore.Data.Scripts.CoreSystems.Ui.Hud
                 {
                     var di = comp.MasterAi.DetectionInfo;
                     var notManual = comp.MasterOverrides.Control != ProtoWeaponOverrides.ControlModes.Manual;
-                    var inRange = weapon.MaxTargetDistanceSqr > 0 && ((di.OtherRangeSqr == double.MaxValue ? false : di.OtherRangeSqr < weapon.MaxTargetDistanceSqr) || (di.PriorityRangeSqr == double.MaxValue ? false : di.PriorityRangeSqr < weapon.MaxTargetDistanceSqr));
+                    var inRange = weapon.MaxTargetDistanceSqr > 0 && ((di.OtherRangeSqr != double.MaxValue && di.OtherRangeSqr < weapon.MaxTargetDistanceSqr) || (di.PriorityRangeSqr != double.MaxValue && di.PriorityRangeSqr < weapon.MaxTargetDistanceSqr));
                     if (weapon.OutOfAmmo && !showReloadIcon)
                         displayText += NoAmmoStr;
                     else if (notManual && (weapon.Target.CurrentState == Target.States.NotSet || weapon.Target.CurrentState == Target.States.Expired))

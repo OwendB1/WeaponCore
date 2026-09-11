@@ -34,7 +34,7 @@ namespace CoreSystems
                         var subTypes = new HashSet<string>();
                         AssemblePartDefinitions(legacyArray, subTypes);
 
-                        var group = MyStringHash.GetOrCompute("Charging");
+                        var group = MyStringHash.GetOrCompute("Defense"); //Charging");
 
                         foreach (var def in AllDefinitions)
                         {
@@ -80,7 +80,7 @@ namespace CoreSystems
             if (baseDefArray.TagAssigmnents != null)
                 AssembleTagAssignments(baseDefArray.TagAssigmnents);
 
-            var group = MyStringHash.GetOrCompute("Charging");
+            var group = MyStringHash.GetOrCompute("Defense"); //Charging");
             foreach (var def in AllDefinitions)
             {
                 if (subTypes.Contains(def.Id.SubtypeName))
@@ -153,7 +153,7 @@ namespace CoreSystems
                     if (VanillaPartNames.TryGetValue(subtypeID, out partName)
                         && (partName != wepDef.HardPoint.PartName || wepDef.HardPoint.HardWare.Type != WeaponDefinition.HardPointDef.HardwareDef.HardwareType.BlockWeapon))
                     {
-                        Log.Line($"WeaponDef '{wepDef.HardPoint.PartName}' has the vanilla subtype {subtypeID} with: {(partName != wepDef.HardPoint.PartName ? "a different part name," : "")}{(wepDef.HardPoint.HardWare.Type != WeaponDefinition.HardPointDef.HardwareDef.HardwareType.BlockWeapon ? "a weapon type not equal to BlockWeapon," : "")}. Setting partname to {partName} and Type to BlockWeapon and generating a new weapon definition!", "debug");
+                        Log.Line($"WeaponDef '{wepDef.HardPoint.PartName}' has the vanilla subtype {subtypeID} with: {(partName != wepDef.HardPoint.PartName ? "a different part name," : "")}{(wepDef.HardPoint.HardWare.Type != WeaponDefinition.HardPointDef.HardwareDef.HardwareType.BlockWeapon ? "a weapon type not equal to BlockWeapon," : "")}. Setting partname to {partName} and Type to BlockWeapon and generating a new weapon definition!", Log.DebugLog);
                         var mount = wepDef.Assignments.MountPoints[i];
 
                         var newArr = new WeaponDefinition.ModelAssignmentsDef.MountPointDef[wepDef.Assignments.MountPoints.Length - 1];

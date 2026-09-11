@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CoreSystems.Platform;
 using CoreSystems.Projectiles;
@@ -47,6 +47,7 @@ namespace CoreSystems.Support
         internal ulong AdvSyncId;
         internal uint ClientAdvSyncSequence;
         internal bool AdvSyncDeathSent;
+        internal readonly List<ulong> AdvSyncClients = new List<ulong>();
         /// <summary>
         ///     History of kinematic states for network latency compensation for the AdvSync projectiles.
         /// </summary>
@@ -144,6 +145,7 @@ namespace CoreSystems.Support
             ClientAdvSyncSequence = 0;
 
             AdvSyncDeathSent = false;
+            AdvSyncClients.Clear();
             AdvSyncPositionBuffer.Clear();
             
             if (IsFragment)
@@ -694,7 +696,8 @@ namespace CoreSystems.Support
                     {
                         Packet = spawnPacket,
                         Entity = frag.Weapon.Comp.CoreEntity,
-                        HasPooledResource = true
+                        HasPooledResource = true,
+                        DeliveredClients = info.AdvSyncClients
                     });
                 }
 

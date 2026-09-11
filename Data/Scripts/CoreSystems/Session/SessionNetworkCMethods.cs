@@ -4,6 +4,7 @@ using CoreSystems.Projectiles;
 using CoreSystems.Support;
 using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
+using VRage.Game.Entity;
 using VRageMath;
 using WeaponCore.Data.Scripts.CoreSystems.Support;
 using static CoreSystems.Support.Ai;
@@ -29,7 +30,7 @@ namespace CoreSystems
                 var packet = packetObj.Packet;
 
                 if (errorPacket.MaxAttempts == 0)  {
-                    Log.LineShortDate($"        [ClientReprocessing] Entity:{packet.EntityId} - Type:{packet.PType}", "net");
+                    Log.LineShortDate($"        [ClientReprocessing] Entity:{packet.EntityId} - Type:{packet.PType}", Log.NetLog);
                     //set packet retry variables, based on type
                     errorPacket.MaxAttempts = 512;
                     errorPacket.RetryDelayTicks = 15;
@@ -43,8 +44,8 @@ namespace CoreSystems
                 if (success || errorPacket.RetryAttempt > errorPacket.MaxAttempts)  {
 
                     if (!success)  
-                        Log.LineShortDate($"        [BadReprocess] Entity:{packet.EntityId} Cause:{errorPacket.Error ?? string.Empty} Type:{packet.PType}", "net");
-                    else Log.LineShortDate($"        [ReprocessSuccess] Entity:{packet.EntityId} - Type:{packet.PType} - Retries:{errorPacket.RetryAttempt}", "net");
+                        Log.LineShortDate($"        [BadReprocess] Entity:{packet.EntityId} Cause:{errorPacket.Error ?? string.Empty} Type:{packet.PType}", Log.NetLog);
+                    else Log.LineShortDate($"        [ReprocessSuccess] Entity:{packet.EntityId} - Type:{packet.PType} - Retries:{errorPacket.RetryAttempt}", Log.NetLog);
 
                     ClientSideErrorPkt.Remove(packetObj);
                     ClientPacketsToClean.Add(packetObj);
@@ -278,10 +279,17 @@ namespace CoreSystems
             {
                 // Out-of-sequence:
                 DebugLog.Warning($"ClientWeaponReloadUpdate out-of-sequence packet: {weaponReloadPacket.SequenceId}/{w.LastAuthoritativeSeqId}");
+                if (DebugMod)
+                    Log.Line($"{packet.EntityId}\t{weaponReloadPacket.PartId}\t{Tick}\treload-out-of-seq\tpacketSeq:{weaponReloadPacket.SequenceId}\tlastSeq:{w.LastAuthoritativeSeqId}\twaitingSrv:{w.ClientReloadWaitingForServer}\tammo:{w.ProtoWeaponAmmo.CurrentAmmo}\tmakeup:{w.ClientMakeUpShots}", Log.ReloadSyncLog, tab: true);
             }
             else
             {
                 w.Reload.Sync(w, weaponReloadPacket.Data, false);
+                if (DebugMod)
+                {
+                    var wasWaiting = w.ClientReloadWaitingForServer;
+                    Log.Line($"{packet.EntityId}\t{weaponReloadPacket.PartId}\t{Tick}\treload-sync\tclearWait:{wasWaiting}\tpacketSeq:{weaponReloadPacket.SequenceId}\tammo:{w.ProtoWeaponAmmo.CurrentAmmo}\tmakeup:{w.ClientMakeUpShots}\tloading:{w.Loading}\trelStart:{w.Reload.StartId}\tcliStart:{w.ClientStartId}\trelEnd:{w.Reload.EndId}\tcliEnd:{w.ClientEndId}", Log.ReloadSyncLog, tab: true);
+                }
                 w.ClientReloadWaitingForServer = false;
                 w.LastAuthoritativeSeqId = weaponReloadPacket.SequenceId;
             }
@@ -303,6 +311,16 @@ namespace CoreSystems
             var w = collection[targetPacket.Target.PartId];
             targetPacket.Target.SyncTarget(w);
 
+            if (DebugMod)
+            {
+                var targetId = 0L;
+                if (w.Target.TargetObject is MyEntity)
+                    targetId = ((MyEntity)w.Target.TargetObject).EntityId;
+                else if (w.Target.TargetObject is Projectile)
+                    targetId = w.Target.TargetId;
+                Log.Line($"{packet.EntityId}\t{targetPacket.Target.PartId}\t{Tick}\tclient-target-sync\tpacketEnt:{targetPacket.Target.EntityId}\thasTarget:{w.Target.HasTarget}\ttarget:{targetId}\tstate:{w.Target.TargetState}\tsyncId:{targetPacket.Target.TargetSyncId}", Log.TargetSyncLog, tab: true);
+            }
+
             data.Report.PacketValid = true;
 
             return true;
@@ -323,6 +341,8 @@ namespace CoreSystems
             {
                 // Out-of-sequence:
                 DebugLog.Warning($"ClientWeaponAmmoUpdate out-of-sequence packet: {ammoPacket.SequenceId}/{w.LastAuthoritativeSeqId}");
+                if (DebugMod)
+                    Log.Line($"{packet.EntityId}\t{ammoPacket.PartId}\t{Tick}\tammo-out-of-seq\tpacketSeq:{ammoPacket.SequenceId}\tlastSeq:{w.LastAuthoritativeSeqId}\twaitingSrv:{w.ClientReloadWaitingForServer}\tammo:{w.ProtoWeaponAmmo.CurrentAmmo}\tmakeup:{w.ClientMakeUpShots}", Log.ReloadSyncLog, tab: true);
             }
             else
             {
@@ -335,11 +355,16 @@ namespace CoreSystems
 
                 if (ammoPacket.IsSyncStepMarker)
                 {
-                    w.ShootTime = w.TicksPerShot * StepConst + RelativeTime;
+                    var interval = w.TicksPerShot * StepConst * RateCompensation;
+                    var maxPull = Math.Min(interval * 0.25, 2d * StepConst);
+                    var correction = MathHelperD.Clamp(interval + RelativeTime - w.ShootTime, -maxPull, +maxPull);
+                    w.PendingPhaseCorrection = correction;
                 }
                 
                 if (w.ClientReloadWaitingForServer)
                 {
+                    if (DebugMod)
+                        Log.Line($"{packet.EntityId}\t{ammoPacket.PartId}\t{Tick}\tammo-sync\tclearWait\tpacketSeq:{ammoPacket.SequenceId}\tburstStop:{ammoPacket.IsBurstStopMarker}\tsyncStep:{ammoPacket.IsSyncStepMarker}\tammo:{w.ProtoWeaponAmmo.CurrentAmmo}\tmakeup:{w.ClientMakeUpShots}", Log.ReloadSyncLog, tab: true);
                     w.ClientReloadWaitingForServer = false;
                 }
 

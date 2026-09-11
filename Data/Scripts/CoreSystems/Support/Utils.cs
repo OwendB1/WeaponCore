@@ -370,7 +370,7 @@ namespace CoreSystems.Support
             if (ms > MaxMs)
             {
                 var message = $"[Warning] {ms} milisecond delay detected in {Name}: ";
-                Log.LineShortDate(message, "perf");
+                Log.LineShortDate(message, Log.PerfLog);
             }
         }
     }

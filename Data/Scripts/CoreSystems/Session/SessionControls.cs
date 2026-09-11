@@ -8,6 +8,8 @@ using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
 using SpaceEngineers.Game.ModAPI;
+using VRage.Utils;
+using VRage.ModAPI;
 using static CoreSystems.Support.CoreComponent.Trigger;
 using static CoreSystems.Support.WeaponDefinition.AnimationDef.PartAnimationSetDef;
 namespace CoreSystems
@@ -213,14 +215,11 @@ namespace CoreSystems
         internal static void CreateCustomActionSet<T>(Session session) where T : IMyTerminalBlock
         {
             CreateCustomActions<T>.CreateShootMode(session);
-            CreateCustomActions<T>.CreateArmReaction(session);
-            CreateCustomActions<T>.CreateTriggerNow(session);
             CreateCustomActions<T>.CreateKeyShoot(session);
             CreateCustomActions<T>.CreateMouseToggle(session);
             CreateCustomActions<T>.CreateShootToggle(session);
             CreateCustomActions<T>.CreateShootOn(session);
             CreateCustomActions<T>.CreateShootOff(session);
-            //CreateCustomActions<T>.CreateAngularTracking(session);
             CreateCustomActions<T>.CreateControlModes(session);
             CreateCustomActions<T>.CreateObjectiveMode(session);
             CreateCustomActions<T>.CreateMovementState(session);
@@ -255,7 +254,10 @@ namespace CoreSystems
 
             CreateCustomActions<T>.CreateMinSize(session);
             CreateCustomActions<T>.CreateMaxSize(session);
-            //CreateCustomActions<T>.CreateFriendly(session);
+
+            CreateCustomActions<T>.CreateCountdown(session);
+            CreateCustomActions<T>.CreateArmReaction(session);
+            CreateCustomActions<T>.CreateTriggerNow(session);
         }
 
         internal static void CreateTurretControllerActions<T>(Session session) where T : IMyTerminalBlock
@@ -362,6 +364,22 @@ namespace CoreSystems
                     var wComp = comp as Weapon.WeaponComponent;                  
                     if (wComp != null && comp.ConsumableSelectionPartIds.Count > 0)
                         wComp.UpdateAmmoList();
+
+                    BlockUi.ControlList.Clear();
+
+                    if (wComp.PrimaryWeapon.System.WConst.ValidControlModes.HasFlag(WeaponDefinition.TargetingDef.ControlModes.Automatic)
+                        || Settings.Enforcement.ProhibitHUDPainter && wComp.PrimaryWeapon.System.WConst.ValidControlModes == WeaponDefinition.TargetingDef.ControlModes.Painter) // fallback to auto if painter only and painter is disabled to avoid issues
+                    {
+                        BlockUi.ControlList.Add(new MyTerminalControlComboBoxItem { Key = 0, Value = MyStringId.GetOrCompute(Localization.GetText("ControlAuto")) });
+                    }
+                    if (wComp.PrimaryWeapon.System.WConst.ValidControlModes.HasFlag(WeaponDefinition.TargetingDef.ControlModes.Manual))
+                    {
+                        BlockUi.ControlList.Add(new MyTerminalControlComboBoxItem { Key = 1, Value = MyStringId.GetOrCompute(Localization.GetText("ControlManual")) });
+                    }
+                    if (wComp.PrimaryWeapon.System.WConst.ValidControlModes.HasFlag(WeaponDefinition.TargetingDef.ControlModes.Painter) && !Settings.Enforcement.ProhibitHUDPainter)
+                    {
+                        BlockUi.ControlList.Add(new MyTerminalControlComboBoxItem { Key = 2, Value = MyStringId.GetOrCompute(Localization.GetText("ControlPainter")) });
+                    }
                 }
             }
         }

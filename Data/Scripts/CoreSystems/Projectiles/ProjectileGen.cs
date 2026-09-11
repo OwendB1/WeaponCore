@@ -1,6 +1,5 @@
-﻿using CoreSystems.Support;
+using CoreSystems.Support;
 using Sandbox.Game.Entities;
-using Sandbox.ModAPI;
 using VRage.Game.Entity;
 using VRageMath;
 using static CoreSystems.Support.NewProjectile;
@@ -121,7 +120,8 @@ namespace CoreSystems.Projectiles
                         {
                             Packet = spawnPacket,
                             Entity = w.Comp.CoreEntity,
-                            HasPooledResource = true
+                            HasPooledResource = true,
+                            DeliveredClients = info.AdvSyncClients
                         });
                     }
                 }

@@ -13,7 +13,7 @@ namespace CoreSystems.Control
         {
             var action = MyAPIGateway.TerminalControls.CreateAction<T>("Arm");
             action.Icon = @"Textures\GUI\Icons\Actions\Toggle.dds";
-            action.Name = new StringBuilder("Arm Warhead");
+            action.Name = new StringBuilder(Localization.GetText("ActionArmTitle"));
             action.Action = CustomActions.RequestSetArmed;
             action.Writer = CustomActions.ArmWriter;
             action.Enabled = TerminalHelpers.CanBeArmed;
@@ -26,7 +26,7 @@ namespace CoreSystems.Control
         {
             var action = MyAPIGateway.TerminalControls.CreateAction<T>("Detonate");
             action.Icon = @"Textures\GUI\Icons\Actions\SwitchOn.dds";
-            action.Name = new StringBuilder("Detonate Now");
+            action.Name = new StringBuilder(Localization.GetText("TerminalTriggerTitle"));
             action.Action = CustomActions.TriggerCriticalReaction;
             action.Writer = TerminalHelpers.EmptyStringBuilder;
             action.Enabled = TerminalHelpers.CanBeArmed;
@@ -34,6 +34,30 @@ namespace CoreSystems.Control
 
             MyAPIGateway.TerminalControls.AddAction<T>(action);
             session.CustomActions.Add(action);
+        }
+        public static void CreateCountdown(Session session)
+        {
+            var action = MyAPIGateway.TerminalControls.CreateAction<T>("WCStartCountdown");
+            action.Icon = @"Textures\GUI\Icons\Actions\SwitchOn.dds";
+            action.Name = new StringBuilder(Localization.GetText("TerminalStartCountTitle"));
+            action.Action = CustomActions.StartCountDown;
+            action.Writer = CustomActions.GetArmedTimeRemaining;
+            action.Enabled = TerminalHelpers.CanBeArmed;
+            action.ValidForGroups = true;
+
+            MyAPIGateway.TerminalControls.AddAction<T>(action);
+            session.CustomActions.Add(action);
+
+            var action2 = MyAPIGateway.TerminalControls.CreateAction<T>("WCStopCountdown");
+            action2.Icon = @"Textures\GUI\Icons\Actions\SwitchOff.dds";
+            action2.Name = new StringBuilder(Localization.GetText("TerminalStopCountTitle"));
+            action2.Action = CustomActions.StopCountDown;
+            action2.Writer = CustomActions.GetArmedTimeRemaining;
+            action2.Enabled = TerminalHelpers.CanBeArmed;
+            action2.ValidForGroups = true;
+
+            MyAPIGateway.TerminalControls.AddAction<T>(action2);
+            session.CustomActions.Add(action2);
         }
 
         internal static void CreateShootMode(Session session)

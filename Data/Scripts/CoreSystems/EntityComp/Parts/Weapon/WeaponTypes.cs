@@ -397,6 +397,9 @@ namespace CoreSystems.Platform
                         FreezeClientShoot = Session.I.IsClient; //if the initiators is a client pause future cycles until the server returns which cycle state to terminate on.
                         FreezeTick = Session.I.Tick;
 
+                        if (Session.I.DebugMod && FreezeClientShoot)
+                            Log.Line($"{Comp.CoreEntity.EntityId}\t{Session.I.Tick}\tfreeze-set\tcompleted:{CompletedCycles}\tlastCycle:{LastCycle}\ttoggleCnt:{state.ToggleCount}\tcliToggle:{ClientToggleCount}\ttrigger:{state.Trigger}", Log.CycleSyncLog, tab: true);
+
                         ulong packagedMessage;
                         EncodeShootState((uint)request, (uint)signal, CompletedCycles, (uint)ShootCodes.ToggleServerOff, out packagedMessage);
                         Session.I.SendShootRequest(Comp, packagedMessage, PacketType.ShootSync, RewriteShootSyncToServerResponse, playerId);
@@ -466,14 +469,14 @@ namespace CoreSystems.Platform
                     var predicted = w.ActiveAmmoDef.AmmoDef.Const.ClientPredictedAmmo;
                     if (w.ActiveAmmoDef.AmmoDef.Const.MustCharge && !predicted)
                     {
-                        Log.Line($"RestoreWeaponShot, recharge", Session.InputLog);
+                        Log.Line($"RestoreWeaponShot, recharge", Log.InputLog);
                         w.ProtoWeaponAmmo.CurrentCharge = w.MaxCharge;
                         w.EstimatedCharge = w.MaxCharge;
                     }
                     else if (!predicted)
                     {
                         w.ProtoWeaponAmmo.CurrentAmmo += (int)CompletedCycles;
-                        Log.Line($"RestoreWeaponShot, return ammo:{CompletedCycles}", Session.InputLog);
+                        Log.Line($"RestoreWeaponShot, return ammo:{CompletedCycles}", Log.InputLog);
                     }
                 }
             }
@@ -489,6 +492,12 @@ namespace CoreSystems.Platform
                     
                     var toggled = w.Comp.ShootManager.ClientToggleCount > state.ToggleCount || state.Trigger == CoreComponent.Trigger.On;
                     var overCount = CompletedCycles >= LastCycle;
+
+                    if (Session.I.DebugMod)
+                    {
+                        var action = !toggled || overCount ? "EndShootMode" : "rearm";
+                        Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Session.I.Tick}\tcycle-end\tendAction:{action}\tcompleted:{CompletedCycles}\tlastCycle:{LastCycle}\tweaponsFired:{WeaponsFired}\ttoggled:{toggled}\toverCount:{overCount}\tammo:{w.ProtoWeaponAmmo.CurrentAmmo}\tmakeup:{w.ClientMakeUpShots}\tburstDelay:{overrides.BurstDelay}", Log.CycleSyncLog, tab: true);
+                    }
 
                     if (!toggled || overCount)
                         EndShootMode(EndReason.ShootSync);
@@ -521,20 +530,25 @@ namespace CoreSystems.Platform
                         var canShoot = !overHeat && (!reloading || skipReload);
 
                         if (canShoot && skipReload)
-                            Log.Line($"ReadyToShoot succeeded on client but with CurrentAmmo > 0 - shooting:{w.IsShooting} - charging:{w.Charging} - charge:{w.ProtoWeaponAmmo.CurrentCharge}({w.MaxCharge})", Session.InputLog);
+                            Log.Line($"ReadyToShoot succeeded on client but with CurrentAmmo > 0 - shooting:{w.IsShooting} - charging:{w.Charging} - charge:{w.ProtoWeaponAmmo.CurrentCharge}({w.MaxCharge})", Log.InputLog);
 
                         var weaponReady = canShoot && !w.IsShooting;
 
                         if (!weaponReady && !skipReady)
                         {
                             if (Session.I.IsServer) 
-                                Log.Line($"MakeReadyToShoot: canShoot:{canShoot} - alreadyShooting:{w.IsShooting} - reloading:{reloading} - skipReload:{skipReload} - CurrentAmmo:{w.ProtoWeaponAmmo.CurrentAmmo} - wait:{w.Reload.WaitForClient}", Session.InputLog);
+                                Log.Line($"MakeReadyToShoot: canShoot:{canShoot} - alreadyShooting:{w.IsShooting} - reloading:{reloading} - skipReload:{skipReload} - CurrentAmmo:{w.ProtoWeaponAmmo.CurrentAmmo} - wait:{w.Reload.WaitForClient}", Log.InputLog);
+                            else if (Session.I.DebugMod)
+                                Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Session.I.Tick}\tdecline\tcanShoot:{canShoot}\talreadyShooting:{w.IsShooting}\treloading:{reloading}\tskipReload:{skipReload}\tammo:{w.ProtoWeaponAmmo.CurrentAmmo}\tmakeup:{w.ClientMakeUpShots}\twait:{w.Reload.WaitForClient}", Log.CycleSyncLog, tab: true);
                             break;
                         }
 
                         weaponsReady += 1;
 
                         w.ShootCount += MathHelper.Clamp(burstTarget, 1, w.ProtoWeaponAmmo.CurrentAmmo + w.ClientMakeUpShots);
+
+                        if (Session.I.DebugMod)
+                            Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Session.I.Tick}\tarm\tshootCount:{w.ShootCount}\tburst:{burstTarget}\tammo:{w.ProtoWeaponAmmo.CurrentAmmo}\tmakeup:{w.ClientMakeUpShots}\treloading:{reloading}\tskipReload:{skipReload}\tisShooting:{w.IsShooting}", Log.CycleSyncLog, tab: true);
                     }
                     else
                         weaponsReady += 1;
@@ -544,7 +558,7 @@ namespace CoreSystems.Platform
 
                 if (!ready && weaponsReady > 0)
                 {
-                    Log.Line($"not ready to MakeReadyToShoot", Session.InputLog);
+                    Log.Line($"not ready to MakeReadyToShoot", Log.InputLog);
                     ResetShootRequest();
                 }
 
@@ -563,11 +577,14 @@ namespace CoreSystems.Platform
             {
                 var wValues = Comp.Data.Repo.Values;
 
+                if (Session.I.DebugMod)
+                    Log.Line($"{Comp.CoreEntity.EntityId}\t{Session.I.Tick}\tend-mode\treason:{reason}\tcompleted:{CompletedCycles}\tlastCycle:{LastCycle}\tweaponsFired:{WeaponsFired}\tfreeze:{FreezeClientShoot}\twaitResp:{WaitingShootResponse}\tTrigger:{wValues.State.Trigger}\tCount:{wValues.State.ToggleCount}\tCliToggle:{ClientToggleCount}\tsig:{Signal}", Log.CycleSyncLog, tab: true);
+
                 for (int i = 0; i < Comp.TotalWeapons; i++)
                 {
                     var w = Comp.Collection[i];
                     if (Session.I.MpActive && reason != EndReason.Overheat) 
-                        Log.Line($"[clear] Reason:{reason} - ammo:{w.ProtoWeaponAmmo.CurrentAmmo} - Trigger:{wValues.State.Trigger} - Signal:{Signal} - Cycles:{CompletedCycles}[{LastCycle}] - Count:{wValues.State.ToggleCount}[{ClientToggleCount}] - WeaponsFired:{WeaponsFired}", Session.InputLog);
+                        Log.Line($"[clear] Reason:{reason} - ammo:{w.ProtoWeaponAmmo.CurrentAmmo} - Trigger:{wValues.State.Trigger} - Signal:{Signal} - Cycles:{CompletedCycles}[{LastCycle}] - Count:{wValues.State.ToggleCount}[{ClientToggleCount}] - WeaponsFired:{WeaponsFired}", Log.InputLog);
 
                     if (w.ShootRequest.Dirty && reason != EndReason.ShootSync)
                         w.ShootRequest.Clean();
@@ -600,7 +617,7 @@ namespace CoreSystems.Platform
 
             internal void ServerRejectResponse(ulong clientId, RequestType requestType)
             {
-                Log.Line($"[server rejecting] Signal:{Signal} - CompletedCycles:{CompletedCycles} requestType:{requestType} - Trigger:{Comp.Data.Repo.Values.State.Trigger}", Session.InputLog);
+                Log.Line($"[server rejecting] Signal:{Signal} - CompletedCycles:{CompletedCycles} requestType:{requestType} - Trigger:{Comp.Data.Repo.Values.State.Trigger}", Log.InputLog);
                 ulong packagedMessage;
                 EncodeShootState(0, (uint)Signals.None, CompletedCycles, (uint)ShootCodes.ClientRequestReject, out packagedMessage);
                 Session.I.SendShootReject(Comp, packagedMessage, PacketType.ShootSync, clientId);
@@ -611,7 +628,7 @@ namespace CoreSystems.Platform
 
             internal void ReceivedServerReject()
             {
-                Log.Line($"[client rejection] message reset - wait:{WaitingShootResponse} - frozen:{FreezeClientShoot}", Session.InputLog);
+                Log.Line($"[client rejection] message reset - wait:{WaitingShootResponse} - frozen:{FreezeClientShoot}", Log.InputLog);
                 if (CompletedCycles > 0)
                     RestoreWeaponShot();
 
@@ -620,7 +637,7 @@ namespace CoreSystems.Platform
 
             internal void FailSafe()
             {
-                Log.Line($"ShootMode failsafe triggered: LastCycle:{LastCycle} - CompletedCycles:{CompletedCycles} - WeaponsFired:{WeaponsFired} - wait:{WaitingShootResponse} - freeze:{FreezeClientShoot}", Session.InputLog);
+                Log.Line($"ShootMode failsafe triggered: LastCycle:{LastCycle} - CompletedCycles:{CompletedCycles} - WeaponsFired:{WeaponsFired} - wait:{WaitingShootResponse} - freeze:{FreezeClientShoot}", Log.InputLog);
                 EndShootMode(EndReason.Failed);
             }
 
@@ -640,7 +657,7 @@ namespace CoreSystems.Platform
                 }
                 else
                 {
-                    Log.Line($"server catching up to client -- from:{CompletedCycles} to:{interval}", Session.InputLog);
+                    Log.Line($"server catching up to client -- from:{CompletedCycles} to:{interval}", Log.InputLog);
                     LastCycle = endCycle;
                 }
             }
@@ -649,15 +666,15 @@ namespace CoreSystems.Platform
             internal void ClientToggledOffByServer(uint interval, bool server = false)
             {
                 if (server)
-                    Log.Line($"server requested toggle off? - wait:{WaitingShootResponse} - mode:{Comp.Data.Repo.Values.Set.Overrides.ShootMode} - freeze:{FreezeClientShoot} - CompletedCycles:{CompletedCycles}({interval}) - LastCycle:{LastCycle}", Session.InputLog);
+                    Log.Line($"server requested toggle off? - wait:{WaitingShootResponse} - mode:{Comp.Data.Repo.Values.Set.Overrides.ShootMode} - freeze:{FreezeClientShoot} - CompletedCycles:{CompletedCycles}({interval}) - LastCycle:{LastCycle}", Log.InputLog);
 
                 if (interval > CompletedCycles)
                 {
-                    Log.Line($"[ClientToggledOffByServer] server interval {interval} > client: {CompletedCycles} - frozen:{FreezeClientShoot} - wait:{WaitingShootResponse}", Session.InputLog);
+                    Log.Line($"[ClientToggledOffByServer] server interval {interval} > client: {CompletedCycles} - frozen:{FreezeClientShoot} - wait:{WaitingShootResponse}", Log.InputLog);
                 }
                 else if (interval < CompletedCycles) // look into adding a condition where the requesting client can cause the server to shoot for n burst to match client without exceeding reload, would need to freeze client.
                 {
-                    Log.Line($"[ClientToggledOffByServer] server interval {interval} < client:{CompletedCycles} - frozen:{FreezeClientShoot} - wait:{WaitingShootResponse}", Session.InputLog);
+                    Log.Line($"[ClientToggledOffByServer] server interval {interval} < client:{CompletedCycles} - frozen:{FreezeClientShoot} - wait:{WaitingShootResponse}", Log.InputLog);
                 }
 
                 if (interval <= CompletedCycles)
@@ -666,7 +683,7 @@ namespace CoreSystems.Platform
                 }
                 else if (interval > CompletedCycles)
                 {
-                    Log.Line($"[ClientToggleResponse] client is behind server: Current: {CompletedCycles} freeze:{FreezeClientShoot} - target:{interval} - LastCycle:{LastCycle}", Session.InputLog);
+                    Log.Line($"[ClientToggleResponse] client is behind server: Current: {CompletedCycles} freeze:{FreezeClientShoot} - target:{interval} - LastCycle:{LastCycle}", Log.InputLog);
 
                     //LastCycle = interval;
                     EndShootMode(EndReason.ServerAhead);

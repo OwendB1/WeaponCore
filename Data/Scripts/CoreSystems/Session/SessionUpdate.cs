@@ -705,30 +705,64 @@ namespace CoreSystems
                                         {
                                             var trackingWeaponIsFake = wComp.PrimaryWeapon.Target.TargetState == TargetStates.IsFake;
                                             var thisWeaponIsFake = w.Target.TargetState == TargetStates.IsFake;
-                                            if (w.System.MaxTrackingTime && Tick - w.Target.ChangeTick > w.System.MaxTrackingTicks || w.Target.TargetState == TargetStates.IsProjectile && (wComp.PrimaryWeapon.Target.TargetObject != w.Target.TargetObject || pTarget.State != Projectile.ProjectileState.Alive) || wComp.PrimaryWeapon.Target.TargetObject != w.Target.TargetObject || trackingWeaponIsFake != thisWeaponIsFake)
+                                            var mtt = w.System.MaxTrackingTime && Tick - w.Target.ChangeTick > w.System.MaxTrackingTicks;
+                                            var projMism = w.Target.TargetState == TargetStates.IsProjectile && (wComp.PrimaryWeapon.Target.TargetObject != w.Target.TargetObject || pTarget.State != Projectile.ProjectileState.Alive);
+                                            var primMism = wComp.PrimaryWeapon.Target.TargetObject != w.Target.TargetObject;
+                                            var fakeMism = trackingWeaponIsFake != thisWeaponIsFake;
+                                            if (mtt || projMism || primMism || fakeMism)
+                                            {
+                                                if (DebugMod)
+                                                    Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tsrv-reset\treason:Expired\tcond:TurretAttached\tsub:mtt:{mtt}\tprojMism:{projMism}\tprimMism:{primMism}\tfakeMism:{fakeMism}\ttsc:{Tick - w.Target.ChangeTick}\tmaxT:{w.System.MaxTrackingTime}\tmaxTicks:{w.System.MaxTrackingTicks}\tstate:{w.Target.TargetState}\ttarget:{w.Target.TargetId}", Log.TargetSyncLog, tab: true);
                                                 w.Target.Reset(Tick, States.Expired);
+                                            }
                                             else
                                                 w.TargetLock = true;
                                         }
                                         else if (w.System.MaxTrackingTime && Tick - w.Target.ChangeTick > w.System.MaxTrackingTicks || !Weapon.TargetAligned(w, w.Target, out targetPos))
+                                        {
+                                            if (DebugMod)
+                                            {
+                                                var mtt = w.System.MaxTrackingTime && Tick - w.Target.ChangeTick > w.System.MaxTrackingTicks;
+                                                Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tsrv-reset\treason:Expired\tcond:TurretAttachedTrk\tsub:mtt:{mtt}\taligned:{(!mtt ? Weapon.TargetAligned(w, w.Target, out targetPos).ToString() : "n/a")}\ttsc:{Tick - w.Target.ChangeTick}\tmaxT:{w.System.MaxTrackingTime}\tmaxTicks:{w.System.MaxTrackingTicks}\tstate:{w.Target.TargetState}\ttarget:{w.Target.TargetId}", Log.TargetSyncLog, tab: true);
+                                            }
                                             w.Target.Reset(Tick, States.Expired);
+                                        }
                                     }
                                     else if (w.System.TrackTargets)
                                     {
                                         if (w.System.MaxTrackingTime && Tick - w.Target.ChangeTick > w.System.MaxTrackingTicks || !Weapon.TargetAligned(w, w.Target, out targetPos))
+                                        {
+                                            if (DebugMod)
+                                            {
+                                                var mtt = w.System.MaxTrackingTime && Tick - w.Target.ChangeTick > w.System.MaxTrackingTicks;
+                                                Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tsrv-reset\treason:Expired\tcond:TrackTargets\tsub:mtt:{mtt}\taligned:{(!mtt ? Weapon.TargetAligned(w, w.Target, out targetPos).ToString() : "n/a")}\ttsc:{Tick - w.Target.ChangeTick}\tmaxT:{w.System.MaxTrackingTime}\tmaxTicks:{w.System.MaxTrackingTicks}\tstate:{w.Target.TargetState}\ttarget:{w.Target.TargetId}", Log.TargetSyncLog, tab: true);
+                                            }
                                             w.Target.Reset(Tick, States.Expired);
+                                        }
                                     }
                                     else if (w.System.MaxTrackingTime && Tick - w.Target.ChangeTick > w.System.MaxTrackingTicks)
+                                    {
+                                        if (DebugMod)
+                                            Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tsrv-reset\treason:Expired\tcond:NoTurretNoTrk\tsub:mtt:True\ttsc:{Tick - w.Target.ChangeTick}\tmaxT:{w.System.MaxTrackingTime}\tmaxTicks:{w.System.MaxTrackingTicks}\tstate:{w.Target.TargetState}\ttarget:{w.Target.TargetId}", Log.TargetSyncLog, tab: true);
                                         w.Target.Reset(Tick, States.Expired);
+                                    }
                                 }
                             }
                         }
                         else if (eTarget != null && eTarget.MarkedForClose || w.Target.HasTarget && w.Target.TargetObject == null && (w.TargetData.EntityId >= 0 || w.TargetData.EntityId <= -3) || w.DelayedTargetResetTick == Tick && w.TargetData.EntityId == 0 && w.Target.TargetObject != null)
                         {
+                            if (DebugMod)
+                            {
+                                var mfc = eTarget != null && eTarget.MarkedForClose;
+                                var nullTarget = !mfc && w.Target.HasTarget && w.Target.TargetObject == null && (w.TargetData.EntityId >= 0 || w.TargetData.EntityId <= -3);
+                                Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tclient-reset\treason:ServerReset\tcond:{(mfc ? "MarkedForClose" : (nullTarget ? "TargetObjectNull" : "DelayedClear"))}\thasTarget:{w.Target.HasTarget}\ttarget:{w.Target.TargetId}\tstate:{w.Target.TargetState}\tpacketEnt:{w.TargetData.EntityId}", Log.TargetSyncLog, tab: true);
+                            }
                             w.Target.Reset(Tick, States.ServerReset);
                         }
                         else if (pTarget != null && (!ai.LiveProjectile.ContainsKey(pTarget) || w.Target.TargetState == TargetStates.IsProjectile && pTarget.State != Projectile.ProjectileState.Alive && pTarget.State != Projectile.ProjectileState.ClientPhantom))
                         {
+                            if (DebugMod && w.Target.HasTarget)
+                                Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tclient-reset\treason:Expired\tcond:Projectile\ttarget:{w.Target.TargetId}\tprojState:{pTarget.State}\tstate:{w.Target.TargetState}", Log.TargetSyncLog, tab: true);
                             w.Target.Reset(Tick, States.Expired);
                             w.FastTargetResetTick = Tick + 6; // Same logic as the server loop
                         }
@@ -793,7 +827,6 @@ namespace CoreSystems
                         var reloadingGuard = aConst.Reloadable && w.ClientMakeUpShots == 0 && (w.Loading || noAmmo || w.Reload.WaitForClient || w.ClientReloadWaitingForServer);
                         var overHeat = w.PartState.Overheated && (w.OverHeatCountDown == 0 || w.OverHeatCountDown != 0 && w.OverHeatCountDown-- == 0);
                         var needsHeat = w.ActiveAmmoDef.AmmoDef.HeatNeededToFire > 0 && w.PartState.Heat < w.ActiveAmmoDef.AmmoDef.HeatNeededToFire;
-
                         var canShoot = !overHeat && !reloadingGuard && !w.System.DesignatorWeapon && sequenceReady && !needsHeat;
                         var paintedTarget = wComp.PainterMode && w.Target.TargetState == TargetStates.IsFake && (w.Target.IsAligned || ai.ControlComp != null && ai.ControlComp.Platform.Control.IsAimed);
                         var autoShot = paintedTarget || w.AiShooting && wValues.State.Trigger == Off;
@@ -806,6 +839,103 @@ namespace CoreSystems
                         var shotReady = canShoot && shootRequest;
                         var noFireTarget = w.System.Values.HardPoint.Other.AllowNoTargetFiring;
                         var shoot = shotReady && ai.CanShoot && (!aConst.RequiresTarget || w.Target.HasTarget || finish || overRide || noFireTarget || wComp.ShootManager.Signal == Weapon.ShootManager.Signals.Manual);
+
+                        if (DebugMod && w.DebugGateLast != shoot)
+                        {
+                            w.DebugGateLast = shoot;
+                            Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\t{shoot}\tcanShoot:{canShoot}\tshootRequest:{shootRequest}\taiCanShoot:{ai.CanShoot}\trequiresTarget:{aConst.RequiresTarget}\thasTarget:{w.Target.HasTarget}\tfinish:{finish}\toverRide:{overRide}\tnoFireTarget:{noFireTarget}\tsig:{wComp.ShootManager.Signal}\treloadingGuard:{reloadingGuard}\toverHeat:{overHeat}\tneedsHeat:{needsHeat}\tsequenceReady:{sequenceReady}\tsMode:{sMode}\tShootCount:{w.ShootCount}\tAiShooting:{w.AiShooting}\tTrigger:{wValues.State.Trigger}\tFreeze:{wComp.ShootManager.FreezeClientShoot}\tWaitResp:{wComp.ShootManager.WaitingShootResponse}\tammo:{w.ProtoWeaponAmmo.CurrentAmmo}\tmakeup:{w.ClientMakeUpShots}\tloading:{w.Loading}\twaitClnt:{w.Reload.WaitForClient}\twaitingSrv:{w.ClientReloadWaitingForServer}\trelStart:{w.Reload.StartId}\tcliStart:{w.ClientStartId}\trelEnd:{w.Reload.EndId}\tcliEnd:{w.ClientEndId}", Log.ShootGateLog, tab: true);
+                        }
+
+                        if (DebugMod && IsClient && !shoot && canShoot && ai.CanShoot && w.Target.HasTarget && !finish && wComp.ShootManager.Signal != Weapon.ShootManager.Signals.Manual)
+                        {
+                            var blk = 0;
+                            if (!anyShot) blk |= 1;
+                            if (!w.AiShooting) blk |= 2;
+                            if (wValues.State.Trigger != Off) blk |= 4;
+                            if (sMode != Weapon.ShootManager.ShootModes.AiShoot) blk |= 16;
+                            if (wComp.ShootManager.FreezeClientShoot) blk |= 32;
+                            if (wComp.ShootManager.WaitingShootResponse) blk |= 64;
+                            if (w.ShootCount == 0 && !onConfrimed) blk |= 128;
+                            if (blk != w.DebugShootBlockLast)
+                            {
+                                w.DebugShootBlockLast = blk;
+                                Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tshoot-block\tcanShoot:{canShoot}\tanyShot:{anyShot}\tautoShot:{autoShot}\taiShooting:{w.AiShooting}\taiCanShoot:{ai.CanShoot}\thasTarget:{w.Target.HasTarget}\tstate:{w.Target.TargetState}\ttarget:{w.Target.TargetId}\ttrigger:{wValues.State.Trigger}\tsMode:{sMode}\tshootCount:{w.ShootCount}\tonConf:{onConfrimed}\tnoShootDelay:{noShootDelay}\tfinish:{finish}\tfreeze:{wComp.ShootManager.FreezeClientShoot}\twaitResp:{wComp.ShootManager.WaitingShootResponse}\tsig:{wComp.ShootManager.Signal}\tblk:{blk}\ttickSinceChange:{Tick - w.Target.ChangeTick}", Log.ShootGateLog, tab: true);
+                            }
+                        }
+
+                        if (DebugMod && IsClient && Tick % 20 == 0)
+                        {
+                        if (w.Target.HasTarget && w.Target.TargetState == TargetStates.IsEntity)
+                        {
+                            var tEnt = w.Target.TargetObject as MyEntity;
+                            var tCenter = tEnt != null ? tEnt.PositionComp.WorldAABB.Center : Vector3D.Zero;
+                            var aimed = ai.ControlComp != null && ai.ControlComp.Platform.Control.IsAimed;
+                            var lockOk = w.TargetLock;
+                            var aimedDist = ai.ControlComp != null ? Vector3D.DistanceSquared(wComp.CoreEntity.PositionComp.WorldAABB.Center, ai.RotorTargetPosition) : -1;
+                            var canB = 0;
+                            if (overHeat) canB |= 1;
+                            if (reloadingGuard) canB |= 2;
+                            if (w.System.DesignatorWeapon) canB |= 4;
+                            if (!sequenceReady) canB |= 8;
+                            if (needsHeat) canB |= 16;
+                            var validEst = w.Target.ValidEstimate;
+                            var resetSub = wComp.ResettingSubparts;
+                            var manual = wComp.ManualMode;
+                            var painter = wComp.PainterMode;
+                            var tRange = (w.Target.TargetPos - w.MyPivotPos).LengthSquared();
+                            var inRge = tRange >= w.MinTargetDistanceSqr && tRange <= w.MaxTargetDistanceSqr;
+                            var rt = validEst && !resetSub && (manual || painter || inRge);
+                            var ae = 0;
+                            if (!w.TurretActive) ae |= 1;
+                            if (!ai.AiInit) ae |= 2;
+                            if (ai.MarkedForClose) ae |= 4;
+                            if (w.Comp.Ai == null) ae |= 8;
+                            if (ai.TopEntity == null) ae |= 16;
+                            if (ai.Construct?.RootAi == null) ae |= 32;
+                            if (w.Comp.CoreEntity == null) ae |= 64;
+                            if (wComp.IsDisabled) ae |= 128;
+                            if (wComp.IsAsleep) ae |= 256;
+                            if (!wComp.IsWorking) ae |= 512;
+                            if (ai.TopEntity != null && ai.TopEntity.MarkedForClose) ae |= 1024;
+                            if (wComp.CoreEntity != null && wComp.CoreEntity.MarkedForClose) ae |= 2048;
+                            if (w.Comp.Platform.State != CorePlatform.PlatformState.Ready) ae |= 4096;
+                            if (ai.Concealed) ae |= 8192;
+                            var cam = wValues.State.Control == ControlMode.Camera;
+                            var tDir = w.Target.TargetPos - w.MyPivotPos;
+                            var cDir = tCenter - w.MyPivotPos;
+                            var dotT = tDir.LengthSquared() > 0 && w.MyPivotFwd.LengthSquared() > 0 ? Vector3D.Dot(w.MyPivotFwd, tDir) / (w.MyPivotFwd.Length() * System.Math.Sqrt(tDir.LengthSquared())) : 999;
+                            var dotC = cDir.LengthSquared() > 0 && w.MyPivotFwd.LengthSquared() > 0 ? Vector3D.Dot(w.MyPivotFwd, cDir) / (w.MyPivotFwd.Length() * System.Math.Sqrt(cDir.LengthSquared())) : 999;
+                            var pktPos = w.TargetData.TargetPos;
+                            var pktV = pktPos != Vector3D.Zero && pktPos.X == pktPos.X && pktPos.Y == pktPos.Y && pktPos.Z == pktPos.Z;
+                            var pDir = pktPos - w.MyPivotPos;
+                            var dotPkt = pktV && pDir.LengthSquared() > 0 && w.MyPivotFwd.LengthSquared() > 0 ? Vector3D.Dot(w.MyPivotFwd, pDir) / (w.MyPivotFwd.Length() * System.Math.Sqrt(pDir.LengthSquared())) : 999;
+                            var pktMatch = pktV && w.TargetData.EntityId == w.Target.TargetId;
+                            var leadT = tDir.LengthSquared() > 0 && cDir.LengthSquared() > 0 ? Vector3D.Dot(tDir, cDir) / (System.Math.Sqrt(tDir.LengthSquared()) * System.Math.Sqrt(cDir.LengthSquared())) : 999;
+                            Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tshot-opp\thasTarget:{w.Target.HasTarget}\tstate:{w.Target.TargetState}\tobjNull:{tEnt == null}\tobjMFC:{tEnt != null && tEnt.MarkedForClose}\tcenterZero:{tCenter.IsZero()}\tlock:{lockOk}\taimed:{aimed}\trotorDist:{aimedDist}\tmaxDet:{wComp.MaxDetectDistanceSqr}\taiShooting:{w.AiShooting}\tanyShot:{anyShot}\tautoShot:{autoShot}\tshootRequest:{shootRequest}\tshootCount:{w.ShootCount}\tcanShoot:{canShoot}\tcanB:{canB}\tloading:{w.Loading}\tnoAmmo:{noAmmo}\twaitClnt:{w.Reload.WaitForClient}\twaitingSrv:{w.ClientReloadWaitingForServer}\tmakeup:{w.ClientMakeUpShots}\tammo:{w.ProtoWeaponAmmo.CurrentAmmo}\tfinishShots:{w.FinishShots}\theat:{w.PartState.Heat}\tohCd:{w.OverHeatCountDown}\tsig:{wComp.ShootManager.Signal}\ttarget:{w.Target.TargetId}\tpacketEnt:{w.TargetData.EntityId}\ttickSinceChange:{Tick - w.Target.ChangeTick}\tvalidEst:{validEst}\tresetSub:{resetSub}\tmanual:{manual}\tpainter:{painter}\tinRge:{inRge}\trt:{rt}\tae:{ae}\tcam:{cam}\tdotT:{dotT}\tdotC:{dotC}\tdotPkt:{dotPkt}\tpktV:{pktV}\tpktMatch:{pktMatch}\tleadT:{leadT}\taz:{w.Azimuth}\tel:{w.Elevation}\tminAz:{w.MinAzToleranceRadians}\tmaxAz:{w.MaxAzToleranceRadians}\tminEl:{w.MinElToleranceRadians}\tmaxEl:{w.MaxElToleranceRadians}\tlookAtFail:{w.LookAtFailCount}", Log.ShootGateLog, tab: true);
+                        }
+                        else
+                        {
+                            Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\ttarget-opp\thasTarget:{w.Target.HasTarget}\tstate:{w.Target.TargetState}\ttsc:{Tick - w.Target.ChangeTick}\tobjNull:{w.Target.TargetObject == null}\ttarget:{w.Target.TargetId}", Log.ShootGateLog, tab: true);
+                        }
+                        }
+
+                        if (DebugMod && IsServer && w.Target.HasTarget && w.Target.TargetState == TargetStates.IsEntity && Tick % 20 == 0)
+                        {
+                            var sEnt = w.Target.TargetObject as MyEntity;
+                            var sCenter = sEnt != null ? sEnt.PositionComp.WorldAABB.Center : Vector3D.Zero;
+                            var sDir = w.Target.TargetPos - w.MyPivotPos;
+                            var csDir = sCenter - w.MyPivotPos;
+                            var sDotT = sDir.LengthSquared() > 0 && w.MyPivotFwd.LengthSquared() > 0 ? Vector3D.Dot(w.MyPivotFwd, sDir) / (w.MyPivotFwd.Length() * System.Math.Sqrt(sDir.LengthSquared())) : 999;
+                            var sDotC = csDir.LengthSquared() > 0 && w.MyPivotFwd.LengthSquared() > 0 ? Vector3D.Dot(w.MyPivotFwd, csDir) / (w.MyPivotFwd.Length() * System.Math.Sqrt(csDir.LengthSquared())) : 999;
+                            var sLead = sDir.LengthSquared() > 0 && csDir.LengthSquared() > 0 ? Vector3D.Dot(sDir, csDir) / (System.Math.Sqrt(sDir.LengthSquared()) * System.Math.Sqrt(csDir.LengthSquared())) : 999;
+                            var sCanB = 0;
+                            if (overHeat) sCanB |= 1;
+                            if (reloadingGuard) sCanB |= 2;
+                            if (w.System.DesignatorWeapon) sCanB |= 4;
+                            if (!sequenceReady) sCanB |= 8;
+                            if (needsHeat) sCanB |= 16;
+                            Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tshot-opp\tside:srv\thasTarget:{w.Target.HasTarget}\tstate:{w.Target.TargetState}\tobjNull:{sEnt == null}\tcenterZero:{sCenter.IsZero()}\tlock:{w.TargetLock}\taiShooting:{w.AiShooting}\tshootRequest:{shootRequest}\tshootCount:{w.ShootCount}\tcanShoot:{canShoot}\tcanB:{sCanB}\theat:{w.PartState.Heat}\tohCd:{w.OverHeatCountDown}\tsig:{wComp.ShootManager.Signal}\ttarget:{w.Target.TargetId}\ttickSinceChange:{Tick - w.Target.ChangeTick}\tsDotT:{sDotT}\tsDotC:{sDotC}\tsLead:{sLead}\taz:{w.Azimuth}\tel:{w.Elevation}\tminAz:{w.MinAzToleranceRadians}\tmaxAz:{w.MaxAzToleranceRadians}\tminEl:{w.MinElToleranceRadians}\tmaxEl:{w.MaxElToleranceRadians}\tlookAtFail:{w.LookAtFailCount}", Log.ShootGateLog, tab: true);
+                        }
 
                         if (shoot) {
                             if (w.System.DelayCeaseFire && (autoShot || w.FinishShots))
@@ -923,13 +1053,16 @@ namespace CoreSystems
 
                 if (checkTime || requiresFocus && w.Target.HasTarget) {
 
+                    var clientHoldsReplica = !IsServer && w.Target.HasTarget && w.Target.TargetState == TargetStates.IsEntity && w.Target.TargetId == w.TargetData.EntityId;
+                    if (DebugMod && clientHoldsReplica)
+                        Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tclient-hold\ttarget:{w.Target.TargetId}\tpacketEnt:{w.TargetData.EntityId}\tstate:{w.Target.TargetState}", Log.TargetSyncLog, tab: true);
 
                     var checkObstructions = w.System.ScanNonThreats && ai.Obstructions.Count > 0;
                     var readyToAcquire = seekProjectile || comp.Data.Repo.Values.State.TrackingReticle || checkObstructions || (comp.DetectOtherSignals && ai.DetectionInfo.OtherInRange || ai.DetectionInfo.PriorityInRange) && ai.DetectionInfo.ValidSignalExists(w);
 
                     Dictionary<object, Weapon> masterTargets;
 
-                    if (readyToAcquire && (!w.System.TargetSlaving || rootConstruct.TrackedTargets.TryGetValue(w.System.StorageLocation, out masterTargets) && masterTargets.Count > 0))
+                    if (!clientHoldsReplica && readyToAcquire && (!w.System.TargetSlaving || rootConstruct.TrackedTargets.TryGetValue(w.System.StorageLocation, out masterTargets) && masterTargets.Count > 0))
                     {
                         if (comp.PrimaryWeapon != null && comp.PrimaryWeapon.System.DesignatorWeapon && comp.PrimaryWeapon != w && comp.PrimaryWeapon.Target.HasTarget) {
 
@@ -952,7 +1085,11 @@ namespace CoreSystems
                             w.EventTriggerStateChanged(EventTriggers.Tracking, true);
 
                             if (MpActive && IsServer)
+                            {
+                                if (DebugMod)
+                                    Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tserver-push\ttarget:{w.Target.TargetId}\tstate:{w.Target.TargetState}\tposId:{w.TargetData.EntityId}", Log.TargetSyncLog, tab: true);
                                 w.Target.PushTargetToClient(w);
+                            }
                         }
                     }
                 }
@@ -967,6 +1104,13 @@ namespace CoreSystems
                 var invalidWeapon = w.Comp.CoreEntity.MarkedForClose || w.Comp.Ai == null || w.Comp.Ai.Concealed || w.Comp.Ai.MarkedForClose || w.Comp.TopEntity.MarkedForClose || w.Comp.Platform.State != CorePlatform.PlatformState.Ready;
                 var smartTimer = w.ActiveAmmoDef.AmmoDef.Trajectory.Guidance == Smart && w.System.TurretMovement == WeaponSystem.TurretType.Fixed && (QCount == w.ShortLoadId && w.Target.HasTarget && Tick - w.LastSmartLosCheck > 240 || Tick - w.LastSmartLosCheck > 1200);
                 var quickSkip = invalidWeapon || w.Comp.IsBlock && smartTimer && !w.System.DisableLosCheck && !w.SmartLos() || w.PauseShoot || w.LiveSmarts >= w.System.MaxActiveProjectiles || (w.ProtoWeaponAmmo.CurrentAmmo == 0 && w.ClientMakeUpShots == 0) && w.ActiveAmmoDef.AmmoDef.Const.Reloadable;
+                if (DebugMod && quickSkip && !w.DebugQuickSkipLast)
+                {
+                    var losBlocked = w.Comp.IsBlock && smartTimer && !w.System.DisableLosCheck && !w.SmartLos();
+                    var noLoadedAmmo = w.ProtoWeaponAmmo.CurrentAmmo == 0 && w.ClientMakeUpShots == 0 && w.ActiveAmmoDef.AmmoDef.Const.Reloadable;
+                    Log.Line($"{w.Comp.CoreEntity.EntityId}\t{w.PartId}\t{Tick}\tquickSkip\tinvalid:{invalidWeapon}\tlosBlocked:{losBlocked}\tpause:{w.PauseShoot}\tmaxSmarts:{w.LiveSmarts >= w.System.MaxActiveProjectiles}\tnoLoadedAmmo:{noLoadedAmmo}\tammo:{w.ProtoWeaponAmmo.CurrentAmmo}\tmakeup:{w.ClientMakeUpShots}\tloading:{w.Loading}\twaitClnt:{w.Reload.WaitForClient}\twaitingSrv:{w.ClientReloadWaitingForServer}", Log.ShootGateLog, tab: true);
+                }
+                w.DebugQuickSkipLast = quickSkip;
                 if (quickSkip)
                 {
                     w.PauseShoot = false;

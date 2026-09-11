@@ -321,7 +321,7 @@ namespace CoreSystems.Support
         {
             if (Session.I.Tick180)
             {
-                Log.LineShortDate($"(DRAWS) --------------- AvShots:[{AvShots.Count}] OnScreen:[{_onScreens}] Shrinks:[{_shrinks}] Glows:[{_previousTrailCount}] Models:[{_models}] P:[{Session.I.Projectiles.ActiveProjetiles.Count}] P-Pool:[{Session.I.Projectiles.ProjectilePool.Count}] AvPool:[{AvShotPool.Count}] (AvBarrels 1:[{Effects1.Count}] 2:[{Effects2.Count}])", "stats");
+                Log.LineShortDate($"(DRAWS) --------------- AvShots:[{AvShots.Count}] OnScreen:[{_onScreens}] Shrinks:[{_shrinks}] Glows:[{_previousTrailCount}] Models:[{_models}] P:[{Session.I.Projectiles.ActiveProjetiles.Count}] P-Pool:[{Session.I.Projectiles.ProjectilePool.Count}] AvPool:[{AvShotPool.Count}] (AvBarrels 1:[{Effects1.Count}] 2:[{Effects2.Count}])", Log.StatsLog);
                 _previousTrailCount = 0;
                 _shrinks = 0;
             }
@@ -1103,7 +1103,7 @@ namespace CoreSystems.Support
             }
             if (Session.I.Tick180)
             {
-                Log.LineShortDate($"(ADV DRAWS) --------------- O:{advBillboardsOrphans} L:{advBillboardsLines} T:{advBillboardsTrails} B:{advBillboardsDrawn}", "stats");
+                Log.LineShortDate($"(ADV DRAWS) --------------- O:{advBillboardsOrphans} L:{advBillboardsLines} T:{advBillboardsTrails} B:{advBillboardsDrawn}", Log.StatsLog);
                 _previousTrailCount = 0;
                 _shrinks = 0;
             }

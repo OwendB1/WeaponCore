@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CoreSystems.Platform;
@@ -52,6 +52,18 @@ namespace CoreSystems
             var localSim = MyAPIGateway.Physics.SimulationRatio;
             var serverSimClamped = MathHelperD.Clamp(serverSim, 0.001d, 1);
             DeltaTimeRatio = IsServer ? 1 : serverSimClamped / MathHelperD.Clamp(localSim, 0.001d, serverSimClamped);
+            
+            if (IsServer)
+            {
+                RateCompensation = 1;
+            }
+            else if (serverSim > 0d)
+            {
+                var rateTarget = MathHelperD.Clamp(localSim / serverSimClamped, 1d, 4d);
+                var rateAlpha = rateTarget > RateCompensation ? 0.02d : 0.25d;
+                RateCompensation += rateAlpha * (rateTarget - RateCompensation);
+            }
+            
             DeltaStepConst = DeltaTimeRatio * StepConst;
             RelativeTime += DeltaStepConst;
             ServerSimulation += serverSim;
@@ -278,12 +290,12 @@ namespace CoreSystems
             var serverSim = ServerSimulation / 180;
             var simSteps = SimStepsLastSecond / 180;
 
-            Log.LineShortDate($"(CPU-T) --- <Steps>{simSteps} <S-Sim>{Math.Round(serverSim, 2)} <C-Sim>{Math.Round(clientSim, 2)} <AI>{ai.Median:0.0000}/{ai.Min:0.0000}/{ai.Max:0.0000} <Acq>{acquire.Median:0.0000}/{acquire.Min:0.0000}/{acquire.Max:0.0000} <SH>{updateTime.Median:0.0000}/{updateTime.Min:0.0000}/{updateTime.Max:0.0000} <CH>{charge.Median:0.0000}/{charge.Min:0.0000}/{charge.Max:0.0000} <PS>{psTime.Median:0.0000}/{psTime.Min:0.0000}/{psTime.Max:0.0000} <PI>{piTIme.Median:0.0000}/{piTIme.Min:0.0000}/{piTIme.Max:0.0000} <PD>{pdTime.Median:0.0000}/{pdTime.Min:0.0000}/{pdTime.Max:0.0000} <PA>{paTime.Median:0.0000}/{paTime.Min:0.0000}/{paTime.Max:0.0000} <DR>{drawTime.Median:0.0000}/{drawTime.Min:0.0000}/{drawTime.Max:0.0000} <AV>{av.Median:0.0000}/{av.Min:0.0000}/{av.Max:0.0000} <NET1>{netTime1.Median:0.0000}/{netTime1.Min:0.0000}/{netTime1.Max:0.0000}> <DB>{db.Median:0.0000}/{db.Min:0.0000}/{db.Max:0.0000}>", "perf");
-            Log.LineShortDate($"(STATS) -------- AIs:[{EntityAIs.Count}] - WcBlocks:[{IdToCompMap.Count}] - AiReq:[{TargetRequests}] Targ:[{TargetChecks}] Bloc:[{BlockChecks}] Aim:[{CanShoot}] CCast:[{ClosestRayCasts}] RndCast[{RandomRayCasts}] TopCast[{TopRayCasts}]", "stats");
+            Log.LineShortDate($"(CPU-T) --- <Steps>{simSteps} <S-Sim>{Math.Round(serverSim, 2)} <C-Sim>{Math.Round(clientSim, 2)} <AI>{ai.Median:0.0000}/{ai.Min:0.0000}/{ai.Max:0.0000} <Acq>{acquire.Median:0.0000}/{acquire.Min:0.0000}/{acquire.Max:0.0000} <SH>{updateTime.Median:0.0000}/{updateTime.Min:0.0000}/{updateTime.Max:0.0000} <CH>{charge.Median:0.0000}/{charge.Min:0.0000}/{charge.Max:0.0000} <PS>{psTime.Median:0.0000}/{psTime.Min:0.0000}/{psTime.Max:0.0000} <PI>{piTIme.Median:0.0000}/{piTIme.Min:0.0000}/{piTIme.Max:0.0000} <PD>{pdTime.Median:0.0000}/{pdTime.Min:0.0000}/{pdTime.Max:0.0000} <PA>{paTime.Median:0.0000}/{paTime.Min:0.0000}/{paTime.Max:0.0000} <DR>{drawTime.Median:0.0000}/{drawTime.Min:0.0000}/{drawTime.Max:0.0000} <AV>{av.Median:0.0000}/{av.Min:0.0000}/{av.Max:0.0000} <NET1>{netTime1.Median:0.0000}/{netTime1.Min:0.0000}/{netTime1.Max:0.0000}> <DB>{db.Median:0.0000}/{db.Min:0.0000}/{db.Max:0.0000}>", Log.PerfLog);
+            Log.LineShortDate($"(STATS) -------- AIs:[{EntityAIs.Count}] - WcBlocks:[{IdToCompMap.Count}] - AiReq:[{TargetRequests}] Targ:[{TargetChecks}] Bloc:[{BlockChecks}] Aim:[{CanShoot}] CCast:[{ClosestRayCasts}] RndCast[{RandomRayCasts}] TopCast[{TopRayCasts}]", Log.StatsLog);
 
             var desyncLevel = serverSim - clientSim;
             if (IsClient && desyncLevel >= 0.1)
-                Log.LineShortDate($"[Client Lagged] desync: {desyncLevel * 100}%", "perf");
+                Log.LineShortDate($"[Client Lagged] desync: {desyncLevel * 100}%", Log.PerfLog);
             
             _drawCpuTime =  drawTime.Median;
             _avCpuTime = av.Median;
@@ -331,7 +343,7 @@ namespace CoreSystems
                 
                 var change = ClientAvDivisor != oldDivisor;
                 if (change)
-                    Log.LineShortDate($"ClientAvScaler changed From:[{oldDivisor}] To:[{ClientAvDivisor}] Billbaords:[{highestBillCount}]", "perf");
+                    Log.LineShortDate($"ClientAvScaler changed From:[{oldDivisor}] To:[{ClientAvDivisor}] Billbaords:[{highestBillCount}]", Log.PerfLog);
             }
         }
 
@@ -395,14 +407,14 @@ namespace CoreSystems
                     Reporter.ReportPool.Return(report);
                 }
                 var packetCount = reports.Value.Count;
-                if (packetCount > 0) Log.LineShortDate($"(NINFO) - <{typeStr}> packets:[{packetCount}] dataTransfer:[{dataTransfer}] validPackets:[{validPackets}] invalidPackets:[{invalidPackets}] serverReceive:[{serverReceivers}({IsServer})] clientReceive:[{clientReceivers}] unknownReceive:[{noneReceivers}]", "net");
+                if (packetCount > 0) Log.LineShortDate($"(NINFO) - <{typeStr}> packets:[{packetCount}] dataTransfer:[{dataTransfer}] validPackets:[{validPackets}] invalidPackets:[{invalidPackets}] serverReceive:[{serverReceivers}({IsServer})] clientReceive:[{clientReceivers}] unknownReceive:[{noneReceivers}]", Log.NetLog);
             }
 
             if (DeathSyncDataSize > 0)
             {
                 var serverPackets = IsServer ? DeathSyncPackets : 0;
                 var clientPackets = !IsServer ? DeathSyncPackets : 0;
-                Log.LineShortDate($"(NINFO) - <PointDefenseSync> packets:[{DeathSyncPackets}] dataTransfer:[{DeathSyncDataSize}] validPackets:[{DeathSyncPackets}] invalidPackets:[0] serverReceive:[{serverPackets}({IsServer})] clientReceive:[{clientPackets}] unknownReceive:[0]", "net");
+                Log.LineShortDate($"(NINFO) - <PointDefenseSync> packets:[{DeathSyncPackets}] dataTransfer:[{DeathSyncDataSize}] validPackets:[{DeathSyncPackets}] invalidPackets:[0] serverReceive:[{serverPackets}({IsServer})] clientReceive:[{clientPackets}] unknownReceive:[0]", Log.NetLog);
                 DeathSyncDataSize = 0;
                 DeathSyncPackets = 0;
             }
@@ -769,6 +781,35 @@ namespace CoreSystems
                                 somethingUpdated = true;
                                 DebugMod = !DebugMod;
                                 MyAPIGateway.Utilities.ShowNotification($"Debug has been toggled: {DebugMod}", 10000);
+                                break;
+                            case "debugserver":
+                                // validation is serverside as well
+                                if (MyAPIGateway.Session.MultiplayerAlive && MyAPIGateway.Session.IsUserAdmin(MyAPIGateway.Session.Player.SteamUserId))
+                                {
+                                    somethingUpdated = true;
+                                    DebugMod = !DebugMod;
+                                    MyAPIGateway.Utilities.ShowNotification($"Debug has been toggled: {DebugMod}", 10000);
+
+                                    DebugTogglePacket packet = new DebugTogglePacket
+                                    {
+                                        EntityId = 0,
+                                        SenderId = MyAPIGateway.Multiplayer.MyId,
+                                        PType = PacketType.DebugTogglePacket,
+                                        Value = DebugMod,
+                                    };
+
+                                    if (IsServer)
+                                    {
+                                        PacketsToClient.Add(new PacketInfo
+                                        {
+                                            Packet = packet
+                                        });
+                                    }
+                                    else
+                                    {
+                                        PacketsToServer.Add(packet);
+                                    }
+                                }
                                 break;
                             case "unsupportedmode":
                                 if (HandlesInput)
@@ -1150,6 +1191,8 @@ namespace CoreSystems
                     WaterMod = true;
                 else if (mod.PublishedFileId == 3514216428 || mod.GetPath().Contains("AppData\\Roaming\\SpaceEngineers\\Mods\\NerdShieldsFramework"))
                     NerdShieldMod = true;
+                else if (mod.PublishedFileId == 3040438530 || mod.GetPath().Contains("AppData\\Roaming\\SpaceEngineers\\Mods\\ToolCore"))
+                    ToolCoreMod = true;
                 if (mod.Name.Contains("VanillaToWCConverter") || mod.PublishedFileId == 3763050326)
                     EnableVanillaToWCConversions = true;
             }
@@ -1263,7 +1306,7 @@ namespace CoreSystems
 
                     Log.Line($"New Threat Detected:{topmost.DebugName}\n - by: {w.BaseComp.TopEntity.DebugName}" +
                              $"Attacking Weapon:{w.System.PartName} " + $"[Weapon] Owner:{wOwner} - Faction:{wFaction} - Neutrals:{w.Comp.Data.Repo.Values.Set.Overrides.Neutrals} - Friends:{w.Comp.Data.Repo.Values.Set.Overrides.Friendly} - Unowned:{w.Comp.Data.Repo.Values.Set.Overrides.Unowned}\n" +
-                             $"[Ai] Owner:{aOwner} - Faction:{aFaction} - Relationship:{info.EntInfo.Relationship} - ThreatLevel:{info.OffenseRating} - isFocus:{ai.Construct.RootAi.Construct.Focus.OldHasFocus}\n", "combat");
+                             $"[Ai] Owner:{aOwner} - Faction:{aFaction} - Relationship:{info.EntInfo.Relationship} - ThreatLevel:{info.OffenseRating} - isFocus:{ai.Construct.RootAi.Construct.Focus.OldHasFocus}\n", Log.CombatLog);
                 }
             }
             catch (Exception ex) { Log.Line($"NewThreatLogging in SessionDraw: {ex}", null, true); }

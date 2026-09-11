@@ -73,7 +73,8 @@ namespace CoreSystems
         AdvProjectileUpdateTargetSyncs,
         AdvProjectilePositionSyncs,
         ClientAmmoRequest,
-        WeaponHeatSync
+        WeaponHeatSync,
+        DebugTogglePacket
     }
 
     #region Packets
@@ -121,7 +122,7 @@ namespace CoreSystems
     [ProtoInclude(49, typeof(AdvProjectileUpdateTargetPacket))]
     [ProtoInclude(50, typeof(AdvProjectilePositionBatchPacket))]
     [ProtoInclude(51, typeof(ClientAmmoRequestPacket))]
-    [ProtoInclude(52, typeof(WeaponAmmoPacket))]
+    [ProtoInclude(52, typeof(DebugTogglePacket))]
     [ProtoInclude(53, typeof(WeaponHeatSyncPacket))]
     [ProtoInclude(54, typeof(WeaponOverridesPacket))]
     [ProtoInclude(55, typeof(UserTagPacket))]
@@ -534,6 +535,18 @@ namespace CoreSystems
             base.CleanUp();
             Tag = null;
             Enabled = false;
+        }
+    }
+
+    [ProtoContract]
+    public class DebugTogglePacket : Packet
+    {
+        [ProtoMember(1)] internal bool Value;
+
+        public override void CleanUp()
+        {
+            base.CleanUp();
+            Value = false;
         }
     }
 

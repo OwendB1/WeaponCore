@@ -308,6 +308,8 @@ namespace CoreSystems
             SApi.Unload();
             if (WaterApiLoaded)
                 WApi.Unregister();
+            if (ToolCoreModApiLoaded)
+                TCApi.Unload();
             SApi = null;
             Api = null;
             ApiServer = null;

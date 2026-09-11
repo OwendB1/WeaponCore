@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CoreSystems.Projectiles;
 using CoreSystems.Support;
@@ -175,6 +175,7 @@ namespace CoreSystems.Platform
         internal double MaxTargetDistance50Sqr;
         internal double MaxTargetDistance25Sqr;
         internal double ShootTime;
+        internal double PendingPhaseCorrection;
         internal uint ServerLastAmmoSyncStepSend = 0; 
         
         internal double MinTargetDistance;
@@ -193,6 +194,9 @@ namespace CoreSystems.Platform
         internal bool FinishShots;
         internal bool ScheduleAmmoChange;
         internal bool CriticalReaction;
+        internal bool DebugGateLast;
+        internal bool DebugQuickSkipLast;
+        internal int DebugShootBlockLast;
         internal bool FoundTopMostTarget;
         internal bool OutOfAmmo;
         internal bool TurretActive;

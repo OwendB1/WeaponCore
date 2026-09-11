@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using CoreSystems.Platform;
-using CoreSystems.Projectiles;
 using CoreSystems.Support;
 using VRage.Game.Entity;
 using VRageMath;
@@ -61,7 +61,7 @@ namespace CoreSystems
                 message += $"{resultPair.Message}: {resultPair.Valid} - ";
             }
             data.ErrorPacket.Error = message;
-            Log.LineShortDate(data.ErrorPacket.Error, "net");
+            Log.LineShortDate(data.ErrorPacket.Error, Log.NetLog);
             return false;
         }
 
@@ -74,6 +74,8 @@ namespace CoreSystems
             internal long SpecialPlayerId;
             internal bool Unreliable;
             internal bool HasPooledResource;
+            internal List<ulong> DeliveredClients;
+            internal ulong[] MustDeliverClients;
         }
 
         internal class ErrorPacket

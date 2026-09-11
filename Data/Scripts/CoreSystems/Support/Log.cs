@@ -10,6 +10,24 @@ namespace CoreSystems.Support
 {
     public static class Log
     {
+        public const string PerfLog = "perf";
+        public const string StatsLog = "stats";
+        public const string NetLog = "net";
+        public const string ReportLog = "report";
+        public const string CombatLog = "combat";
+        public const string AmmoStatsLog = "ammostats";
+        public const string WepStatsLog = "wepstats";
+        public const string DmgStatsLog = "dmgstats";
+        public const string GridDmgStatsLog = "griddmgstats";
+        public const string ShootLog = "shoot";
+        public const string ShootGateLog = "shootgate";
+        public const string ReloadSyncLog = "reloadsync";
+        public const string TargetSyncLog = "targetsync";
+        public const string CycleSyncLog = "cyclesync";
+        public const string InputLog = "input";
+        public const string DebugLog = "debug";
+        public const string CustomLog = "custom";
+
         private static MyConcurrentPool<LogInstance> _logPool = new MyConcurrentPool<LogInstance>(128);
         private static ConcurrentDictionary<string, LogInstance> _instances = new ConcurrentDictionary<string, LogInstance>();
         private static ConcurrentQueue<string[]> _threadedLineQueue = new ConcurrentQueue<string[]>();
@@ -111,22 +129,42 @@ namespace CoreSystems.Support
                 _instances[name] = instance;
 
                 instance.TextWriter = MyAPIGateway.Utilities.WriteFileInLocalStorage(filename, typeof(LogInstance));
-                if (name == "wepstats")
+                if (name == WepStatsLog)
                 {
                     Stats("Name\tMaxDist\tMinDist\tDevShotAngle\tAimTolerance\tAimLeadingPrediction\tRotateRate\tElevateRate\tIdlePower\tRateOfFire\tReloadTime\tHeatPerShot\tMaxHeat\tHeatSinkRate\tShotsInBurst\tDelayAfterBurst\tAmmoName", name);
                 }
-                else if (name == "ammostats")
+                else if (name == AmmoStatsLog)
                 {
                     Stats("Name\tBaseDamage\tBaseDamageType\tAreaDamageType\tDetDamageType\tShieldDamageType\tLargeGridModifier\tSmallGridModifier\tArmorModifier\tLightArmorModifier\tHeavyArmorModifier\tNonArmorModifier\tShieldsModifier\tShieldBypass\t" +
                         "FragmentName\tFragmentQuanty\tFragmentDegrees\tBBHRadius\tBBHDamage\tBBHDepth\tBBHMaxAbsorb\tBBHFalloff\tEOLRadius\tEOLDamage\tEOLDepth\tEOLMaxAbsorb\tEOLFalloff\tAccelPerSec\tMaxSpeed\tMaxTrajectory\tMaxLifeTime", name);
                 }
-                else if (name == "dmgstats")
+                else if (name == DmgStatsLog)
                 {
                     Stats("WeaponName\tQuantity\tTotalDamage\tPrimaryDamage\tAOEDamage\tShieldDamage\tProjectileDamage", name);
                 }
-                else if (name == "griddmgstats")
+                else if (name == GridDmgStatsLog)
                 {
                     Stats("GridName\tMainOwner\tTotalDamage\tPrimaryDamage\tAOEDamage\tShieldDamage\tProjectileDamage", name);
+                }
+                else if (name == ShootLog)
+                {
+                    Stats("Time\tEntity Id\tBarrel Rotation\tNot Spun\tNot Ready\tShooting\tRelative Time\tShoot Time", name);
+                }
+                else if (name == ShootGateLog)
+                {
+                    Stats("ShootGate - EntityId,PartId,Tick,Shoot,canShoot,shootRequest,aiCanShoot,requiresTarget,hasTarget,finish,overRide,noFireTarget,sig,reloadingGuard,overHeat,needsHeat,sequenceReady,sMode,ShootCount,AiShooting,Trigger,Freeze,WaitResp,ammo,makeup,loading,waitClnt,waitingSrv,relStart,cliStart,relEnd,cliEnd | quickSkip: EntityId,PartId,Tick,quickSkip,invalid,losBlocked,pause,maxSmarts,noLoadedAmmo,ammo,makeup,loading,waitClnt,waitingSrv | shoot-block(client): EntityId,PartId,Tick,shoot-block,canShoot,anyShot,autoShot,aiShooting,aiCanShoot,hasTarget,state,target,trigger,sMode,shootCount,onConf,noShootDelay,finish,freeze,waitResp,sig,blk,tickSinceChange | shot-opp(client,Tick20): EntityId,PartId,Tick,shot-opp,hasTarget,state,objNull,objMFC,centerZero,lock,aimed,rotorDist,maxDet,aiShooting,anyShot,autoShot,shootRequest,shootCount,canShoot,canB(1=overHeat,2=reloadingGuard,4=designator,8=!seqReady,16=needsHeat),loading,noAmmo,waitClnt,waitingSrv,makeup,ammo,finishShots,heat,ohCd,sig,target,packetEnt,tickSinceChange,validEst,resetSub,manual,painter,inRge,rt(readyToTrack approx),ae(AimAi 934 skip mask),cam(Control==Camera),dotT(barrel·clientPred),dotC(barrel·trueCenter),dotPkt(barrel·packet/serverIntercept),pktV(packet pos valid),pktMatch(packet ent==target),leadT(pred·center dot),az,el,minAz,maxAz,minEl,maxEl,lookAtFail | target-opp(client,Tick20): EntityId,PartId,Tick,target-opp,logs when shot-opp sample gate (hasTarget+IsEntity) is FALSE,hasTarget,state,tsc(tickSinceChange),objNull,target | shot-opp(server,Tick20): side:srv ...,lock=TargetLock,rt/ae/cam same,sDotT,sDotC,sLead,az,el,minAz,maxAz,minEl,maxEl,lookAtFail", name);
+                }
+                else if (name == ReloadSyncLog)
+                {
+                    Stats("ReloadSync - EntityId,PartId,Tick,event | events: wait-set,reload-out-of-seq,reload-sync,ammo-out-of-seq,ammo-sync,client-reload-start,over-fire | fields: packetSeq,lastSeq,clearWait,ammo,makeup,loading,waitingSrv,relStart,cliStart,cliEnd,relEnd,runAmmoToMakeUp,burstStop,syncStep,cliLastShot,srv,cli", name);
+                }
+                else if (name == TargetSyncLog)
+                {
+                    Stats("TargetSync - EntityId,PartId,Tick,event | events: server-push,client-target-sync,target-apply,client-reset | fields: target,state,posId,packetEnt,applied,hasTarget,syncId,curState,delayReset,reason,cond,projState | reset reasons: ServerReset(MarkedForClose/TargetObjectNull/DelayedClear),Expired,NoTargetsSeen", name);
+                }
+                else if (name == CycleSyncLog)
+                {
+                    Stats("CycleSync - EntityId,PartId,Tick,event | events: cycle-end,end-mode,arm,decline,freeze-set | fields: endAction,completed,lastCycle,weaponsFired,toggled,overCount,shootCount,burst,reloading,skipReload,isShooting,canShoot,alreadyShooting,ammo,makeup,burstDelay,reason,freeze,waitResp,Trigger,Count,CliToggle,sig,toggleCnt,cliToggle", name);
                 }
                 else
                 {
@@ -201,16 +239,16 @@ namespace CoreSystems.Support
         public static void NetLogger(Session session, string message, string name, ulong directedSteamId = ulong.MaxValue)
         {
             switch (name) {
-                case "perf":
+                case PerfLog:
                     message = "1" + message;
                     break;
-                case "stats":
+                case StatsLog:
                     message = "2" + message;
                     break;
-                case "net":
+                case NetLog:
                     message = "3" + message;
                     break;
-                case "custom":
+                case CustomLog:
                     message = "4" + message;
                     break;
                 default:
@@ -227,7 +265,7 @@ namespace CoreSystems.Support
             else MyModAPIHelper.MyMultiplayer.Static.SendMessageTo(Session.StringPacketId, encodedString, directedSteamId, true);
         }
 
-        public static void Line(string text, string instanceName = null, bool exception = false)
+        public static void Line(string text, string instanceName = null, bool exception = false, bool tab = false)
         {
             try
             {
@@ -238,11 +276,11 @@ namespace CoreSystems.Support
                     if (name == _defaultInstance && !instance.Session.LocalVersion && instance.Paused())
                         return;
 
-                    var message = $"{DateTime.Now:MM-dd-yy_HH-mm-ss-fff} - " + text;
+                    var message = $"{DateTime.Now:MM-dd-yy_HH-mm-ss-fff}{(tab ? "\t" : " - ")}" + text;
                     instance.TextWriter.WriteLine(message);
                     instance.TextWriter.Flush();
                     var set = instance.Session.AuthorSettings;
-                    var netEnabled = instance.Session.AuthLogging && name == _defaultInstance && set[0] >= 0 || name == "perf" && set[1] >= 0 || name == "stats" && set[2] >= 0 || name == "net" && set[3] >= 0;
+                    var netEnabled = instance.Session.AuthLogging && name == _defaultInstance && set[0] >= 0 || name == PerfLog && set[1] >= 0 || name == StatsLog && set[2] >= 0 || name == NetLog && set[3] >= 0;
                     if (netEnabled)
                         NetLogger(instance.Session, "[R-LOG] " + text, name);
                 }
@@ -290,7 +328,7 @@ namespace CoreSystems.Support
                     instance.TextWriter.Flush();
 
                     var set = instance.Session.AuthorSettings;
-                    var netEnabled = instance.Session.AuthLogging && name == _defaultInstance && set[0] >= 0 || name == "perf" && set[1] >= 0 || name == "stats" && set[2] >= 0 || name == "net" && set[3] >= 0;
+                    var netEnabled = instance.Session.AuthLogging && name == _defaultInstance && set[0] >= 0 || name == PerfLog && set[1] >= 0 || name == StatsLog && set[2] >= 0 || name == NetLog && set[3] >= 0;
                     if (netEnabled)
                         NetLogger(instance.Session, "[R-LOG] " + text, name);
                 }
@@ -315,7 +353,7 @@ namespace CoreSystems.Support
                     instance.TextWriter.Flush();
 
                     var set = instance.Session.AuthorSettings;
-                    var netEnabled = instance.Session.AuthLogging && name == _defaultInstance && set[0] >= 0 || name == "perf" && set[1] >= 0 || name == "stats" && set[2] >= 0 || name == "net" && set[3] >= 0;
+                    var netEnabled = instance.Session.AuthLogging && name == _defaultInstance && set[0] >= 0 || name == PerfLog && set[1] >= 0 || name == StatsLog && set[2] >= 0 || name == NetLog && set[3] >= 0;
                     if (netEnabled)
                         NetLogger(instance.Session, "[R-LOG] " + text, name);
                 }

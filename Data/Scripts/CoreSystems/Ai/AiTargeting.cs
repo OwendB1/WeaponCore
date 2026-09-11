@@ -82,7 +82,7 @@ namespace CoreSystems.Support
                 if (w.NewTarget.CurrentState != Target.States.NoTargetsSeen) 
                     w.NewTarget.Reset(Session.I.Tick, Target.States.NoTargetsSeen);
                 
-                if (w.Target.CurrentState != Target.States.NoTargetsSeen)
+                if (w.Target.CurrentState != Target.States.NoTargetsSeen && !(Session.I.IsClient && w.Target.HasTarget && w.Target.TargetState == Target.TargetStates.IsEntity && w.Target.TargetId == w.TargetData.EntityId))
                     w.Target.Reset(Session.I.Tick, Target.States.NoTargetsSeen, fakeInfo == null);
 
                 w.LastBlockCount = masterAi.BlockCount;
